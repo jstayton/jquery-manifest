@@ -224,7 +224,7 @@
 
       // Append the remove link and hidden values after the display elements of
       // the item.
-      $item.append($remove, $value)
+      $item.append($remove, $value);
 
       if (options.onAdd) {
         // The 'onAdd' callback can prevent the item from being added by
@@ -428,8 +428,7 @@
     // Bind the necessary events to the Marco Polo list.
     _bindMarcoPoloList: function () {
       var self = this,
-          // Replace with official Marco Polo method to get the list.
-          $mpList = self.$input.next();
+          $mpList = self.$input.marcoPolo('list');
 
       $mpList.bind('mousedown.manifest', function () {
         // If arbitrary values are allowed, track for use in document 'mouseup'
