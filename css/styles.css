@@ -1,0 +1,153 @@
+body {
+  font-family: Georgia, sans-serif;
+  padding: 40px;
+}
+
+div#container {
+  margin: auto;
+  width: 780px;
+}
+
+h1 {
+  font-size: 1.8em;
+  margin-bottom: 40px;
+}
+
+
+h2 {
+  color: #C0C0C0;
+  font-size: 1.2em;
+  margin: 20px 0;
+}
+
+form img {
+  display: none;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+
+form.mp_busy img {
+  display: inline;
+}
+
+div.mf_container {
+  border: 1px solid #000000;
+  cursor: text;
+  min-height: 30px;
+  padding: 2px;
+	width: 494px;
+}
+
+ol.mf_list {
+  background-color: #FFFFFF;
+  border: 0;
+  display: inline;
+  font: inherit;
+  font-size: 100%;
+  list-style: none;
+  margin: 0;
+  outline: 0;
+  overflow: hidden;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+ol.mf_list li {
+  border: 1px solid #C0C0C0;
+  cursor: pointer;
+  display: inline-block;
+  margin: 2px;
+  outline: 0;
+  padding: 4px;
+}
+
+ol.mf_list li.mf_highlighted {
+  background-color: #E0E0E0;
+}
+
+ol.mf_list li.mf_selected {
+  background-color: #C0C0C0;
+}
+
+ol.mf_list li a.mf_remove {
+  color: #E0E0E0;
+  margin-left: 10px;
+  text-decoration: none;
+}
+
+ol.mf_list li.mf_highlighted a {
+  color: #FFFFFF;
+}
+
+ol.mf_list li.mf_selected a {
+  color: #FFFFFF;
+}
+
+input {
+  border: 1px solid #000000;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  margin: 2px;
+  outline: none;
+  padding-left: 4px;
+}
+
+/* The unordered list inserted directly after the input field. */
+ol.mp_list {
+  background-color: #FFFFFF;
+  border: 0;
+  border-left: 1px solid #C0C0C0;
+  border-right: 1px solid #C0C0C0;
+  font: inherit;
+  font-size: 100%;
+  list-style: none;
+  margin: 0;
+  outline: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  vertical-align: baseline;
+  width: 498px;
+  z-index: 99999;
+}
+
+/* Each list item, regardless of success, error, etc. */
+ol.mp_list li {
+  border: 0;
+  border-bottom: 1px solid #C0C0C0;
+  margin: 0;
+  outline: 0;
+  padding: 4px 4px 4px 9px;
+  vertical-align: baseline;
+}
+
+/* Each list item from a successful request. */
+ol.mp_list li.mp_item {
+
+}
+
+/* Each list item that's selectable. */
+ol.mp_list li.mp_selectable {
+  cursor: pointer;
+}
+
+/* The list item that's currently highlighted. */
+ol.mp_list li.mp_highlighted {
+  background-color: #E0E0E0;
+}
+
+/* When a request is made that returns zero results. */
+ol.mp_list li.mp_no_results {
+
+}
+
+/* When a request is made that doesn't meet the 'minChars' length option. */
+ol.mp_list li.mp_min_chars {
+
+}
+
+/* When a request is made that fails during the ajax request. */
+ol.mp_list li.mp_error {
+
+}
