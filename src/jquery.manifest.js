@@ -61,11 +61,13 @@
       onSelect: null,
       // Called when an item is no longer selected.
       onSelectRemove: null,
-      // Whether to allow arbitrary, non-result-list values to be added when
-      // the 'separator' key character is pressed or the input is blurred.
+      // Whether to only allow items to be selected from the results list. If
+      // 'false', arbitrary, non-results-list values can be added when the
+      // 'separator' key character is pressed or the input is blurred.
       required: false,
-      // Key character to separate arbitrary, non-result-list values, if
-      // allowed. Pressing this will add the current input value to the list.
+      // Key character to separate arbitrary, non-results-list values if
+      // the 'required' option is 'false'. Pressing this will add the current
+      // input value to the list.
       separator: ',',
       // Name of the hidden input value fields. Do not include '[]' at the end,
       // as that will be added. If unset, the default is to add '_values[]' to
