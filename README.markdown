@@ -1,40 +1,64 @@
 Manifest
 ========
 
-A modern jQuery plugin for building a list of values from an autocomplete input
-field. An example of such functionality is the recipient list in an email app,
-which can have multiple email addresses.
+A jQuery plugin that greatly improves the user experience in selecting multiple
+values for a single form field.
+
+The _recipients_ field in an email app is a perfect example. You _could_ just
+offer a plain text input field, requiring the user to manually separate each
+recipient with a comma. Removing a recipient, however, is a pain: the user has
+to precisely select just the right amount of text, making sure not to
+accidentally remove too much or too little. As a discerning developer, you know
+the user experience should be better. And it can be, with Manifest.
 
 *   [Examples](http://jstayton.github.com/jquery-manifest)
 *   [Release Notes](https://github.com/jstayton/jquery-manifest/wiki/Release-Notes)
+
+Features
+--------
+
+*   **Improved user experience.** The user no longer has to fumble through
+    manually separating each value, or selecting precisely the right amount of
+    text to remove a value. With Manifest, values can easily be added,
+    selected, and removed via mouse or keyboard.
+*   **Improved developer experience.** Why manually parse each value from a
+    single string when Manifest delivers an array with the values ready to be
+    processed?
+*   **Autocomplete functionality.**
+    [Marco Polo](https://github.com/jstayton/jquery-marcopolo) is built-in to
+    provide bulletproof autocomplete functionality. And it's from the same
+    developer as Manifest (_why am I talking in the third person?_), so you can
+    trust in the quality of the code and integration.
+*   **Arbitrary values.** Limit selection strictly to the autocomplete results,
+    or allow arbitrary values not returned through autocomplete. Either way,
+    it's a simple configuration option.
+*   **Complete styling control.** With straightforward markup that's explained
+    in detail, you can easily style and modify all of the components to fit
+    your needs and aesthetic.
+*   **Callbacks for all major events.** Add your own twist when an item is
+    added, removed, selected, highlighted, and more.
 
 Requirements
 ------------
 
 *   jQuery 1.4.2 or newer.
 *   jQuery UI Widget 1.8.14. Included in the minified version.
-*   jQuery Marco Polo 1.3.0. Included in the minified version.
+*   Marco Polo 1.3.0. Included in the minified version.
 *   All modern browsers are supported, as well as IE 6 and newer.
 
-How it Works
-------------
+Getting Started
+---------------
 
-Let's say you're building an email app that allows multiple recipients to be
-specified. You _could_ just offer a plain text input field. But, as discerning
-developer who wants to offer a better user experience, you want something more
-tailored for the job. Manifest is what you're looking for.
-
-The first step to getting started is to include both jQuery and Manifest on the
-page:
+To start, make sure to include both jQuery and Manifest in your HTML:
 
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.manifest.min.js"></script>
 
-Next, add a text input field:
+Next, add a text input field, if you haven't already:
 
     <input type="text" id="recipients" name="recipients" />
 
-Now attach Manifest to the input field:
+Then attach Manifest to the text input field in your JavaScript:
 
     $('#recipients').manifest({
       marcoPolo: {
@@ -45,68 +69,35 @@ Now attach Manifest to the input field:
       }
     });
 
-At this point, viewing the source of the input field reveals some changes to
-the original markup:
+Notice the _marcoPolo_ option object.
+[Marco Polo](https://github.com/jstayton/jquery-marcopolo) powers the
+autocomplete functionality within Manifest, and the option object allows any of
+Marco Polo's options to be configured through Manifest. Be sure to read through
+Marco Polo's documentation for how it works and what's possible, including
+details on returning results in JSON format from your data source _url_.
 
-    <div class="mf_container">
-      <ol class="mf_list" />
-      <input type="text" id="recipients" name="recipients" class="mf_input mp_input" autocomplete="off" />
-      <measure class="mf_measure" style="…">---</measure>
-    </div>
-    <ol class="mp_list" />
+Once you have autocomplete results working through Marco Polo, select a few of
+those results for submission. Manifest stores each item value in an array named
+after the text input field. In the case of this example, the field name is
+_recipients_, so the array of values is named _recipients\_values_. If you dump
+the values of this array in PHP (_$\_POST['recipients\_values']_), the results
+will look something like this:
 
-Don't freak! Let's walk through each line.
+    Array
+    (
+        [0] => "Lindsay Weir" (lweir65@gmail.com)
+        [1] => "Bill Haverchuck" (chuckle@yahoo.com)
+        [2] => "Daniel Desario" (ddesario@me.com)
+    )
 
-*   The input field is given the class _mf\_input_ and wrapped in a container
-    _div_. This container now acts as, and should be styled as, the input
-    field.
-*   An empty, ordered list is created and inserted directly before the input
-    field for displaying selected items. This list is given the class
-    _mf\_list_.
-*   A _measure_ element is created and inserted directly after the input field
-    for computing the width of the input field value. This element is hidden
-    and only used behind the scenes.
-*   Finally, Marco Polo is attached to the input field to provide autocomplete
-    functionality. The empty, ordered list after the container _div_ is a
-    product of Marco Polo for displaying results.
+Loop through the array and process each value as necessary.
 
-Speaking of Marco Polo, it's important that you understand how its autocomplete
-functionality works, especially how to return JSON from your backend data
-source to populate the results list. Rather than repeat it all here, head over
-to [Marco Polo on GitHub](https://github.com/jstayton/jquery-marcopolo) for a
-complete walkthrough.
+You should now have enough understanding of Manifest to start configuring it
+for your specific needs. And when you're ready, considering reading through
+some of the more advanced guides:
 
-That's all the setup necessary in your HTML and JavaScript. Be sure to check
-out the [CSS Starter Template](https://github.com/jstayton/jquery-manifest/wiki/CSS-Starter-Template)
-for some basic styling and stubs for all of the components, and
-[HTML Breakdown](https://github.com/jstayton/jquery-manifest/wiki/HTML-Breakdown)
-for a complete look into the HTML markup.
-
-You should now have a working instance of Manifest. Go ahead and select a few
-recipients. Each selection is added to the ordered list that was created
-directly before the input field:
-
-    <ol class="mf_list">
-      <li class="mf_item">
-        "Lindsay Weir" (lweir65@gmail.com)
-        <a href="#" class="mf_remove" title="Remove">X</a>
-        <input type="hidden" class="mf_value" name="recipients_values[]" value="lweir65@gmail.com" />
-      </li>
-      …
-    </ol>
-
-The display text, remove link, and hidden input value can all be formatted
-using callback options.
-
-When the form containing the Manifest field is submitted, _recipients\_values_
-will contain all of the selected item values (in the case of our example,
-recipient email addresses). Simply loop through the array and process each
-value as necessary.
-
-And that's it! While this example demonstrates a number of fundamental
-concepts, the possibilities extend far beyond the recipient list in an email
-app. Really, any input field that accepts multiple values can benefit from the
-improved user experience offered by Manifest.
+*   [CSS Starter Template](https://github.com/jstayton/jquery-manifest/wiki/CSS-Starter-Template)
+*   [HTML Breakdown](https://github.com/jstayton/jquery-manifest/wiki/HTML-Breakdown)
 
 Options
 -------
