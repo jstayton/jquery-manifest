@@ -165,6 +165,8 @@ Options
     *   **$mpItem** _jQuery object, null_ Optional Marco Polo selected list
                                           item.
 
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+
     _Return:_ _string_, _DOM element_, or _jQuery object_ to use as the
               display.
 
@@ -188,6 +190,8 @@ Options
 
     *   **$remove** _jQuery object_ Remove link.
     *   **$item** _jQuery object_ List item that will be added.
+
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
 
     _Return:_ _string_, _DOM element_, or _jQuery object_ to use as the
               display.
@@ -220,6 +224,8 @@ Options
     *   **$mpItem** _jQuery object, null_ Optional Marco Polo selected list
                                           item.
 
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+
     _Return:_ _string_ value.
 
 #### Events
@@ -235,6 +241,8 @@ Options
 
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that will be added.
+
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifestadd_ event:
 
@@ -252,6 +260,8 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's being highlighted.
 
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+
     _Bind:_ You can also bind to the _manifesthighlight_ event:
 
         $(selector).bind('manifesthighlight', function (event, data, $item) { … });
@@ -267,6 +277,8 @@ Options
 
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's no longer highlighted.
+
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifesthighlightremove_ event:
 
@@ -285,6 +297,8 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's being removed.
 
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+
     _Bind:_ You can also bind to the _manifestremove_ event:
 
         $(selector).bind('manifestremove', function (event, data, $item) { … });
@@ -301,6 +315,8 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's being selected.
 
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+
     _Bind:_ You can also bind to the _manifestselect_ event:
 
         $(selector).bind('manifestselect', function (event, data, $item) { … });
@@ -316,6 +332,8 @@ Options
 
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's no longer selected.
+
+    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifestselectremove_ event:
 
