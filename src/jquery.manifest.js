@@ -156,23 +156,25 @@
 
     // Set an option.
     _setOption: function (option, value) {
+      var self = this;
+
       switch (option) {
         case 'marcoPolo':
           // Pass changes on to Marco Polo, with the options required for this
           // plugin to work overriding the custom options.
-          this.$input.marcoPolo('option', $.extend({}, value, this._marcoPoloOptions()));
+          self.$input.marcoPolo('option', $.extend({}, value, self._marcoPoloOptions()));
 
           break;
 
         case 'required':
-          this.$input.marcoPolo('option', 'required', value);
+          self.$input.marcoPolo('option', 'required', value);
 
           break;
 
         case 'valuesName':
           // Change the 'name' of all hidden input values currently added to
           // the list.
-          this.$list
+          self.$list
             .find('input:hidden.mf_value')
             .attr('name', value + '[]');
 
@@ -195,8 +197,9 @@
 
     // Add an item to the end of the list.
     add: function (data, $mpItem) {
-      var $input = this.$input,
-          options = this.options,
+      var self = this,
+          $input = self.$input,
+          options = self.options,
           $item = $('<li class="mf_item" />'),
           $remove = $('<a href="#" class="mf_remove" title="Remove" />'),
           $value = $('<input type="hidden" class="mf_value" />'),
@@ -227,25 +230,19 @@
       // the item.
       $item.append($remove, $value);
 
-      if (options.onAdd) {
-        // The 'onAdd' callback can prevent the item from being added by
-        // returning 'false'.
-        add = options.onAdd.call($input, data, $item);
-      }
+      add = self._trigger('add', [data, $item]);
 
       if (add !== false) {
-        $item.appendTo(this.$list);
+        $item.appendTo(self.$list);
       }
     },
 
     // Remove one or more list items, specifying either jQuery objects or a
     // selector that matches list children.
     remove: function (selector) {
-      var $input = this.$input,
-          options = this.options,
-          $items = $(),
-          $item = $(),
-          remove = true;
+      var self = this,
+          $input = self.$input,
+          $items = $();
 
       // If the selector is already a jQuery object (or objects), use that.
       if (selector instanceof jQuery) {
@@ -253,21 +250,14 @@
       }
       // Otherwise, query for the items to remove based on the selector.
       else {
-        $items = this.$list.children(selector);
+        $items = self.$list.children(selector);
       }
 
       $items.each(function () {
-        $item = $(this);
+        var $item = $(this),
+            remove = true;
 
-        if (options.onRemove) {
-          // The 'onRemove' callback can prevent the item from being removed by
-          // returning 'false'.
-          remove = options.onRemove.call($input, $item.data('manifest'), $item);
-        }
-        else {
-          // By default, remove the item.
-          remove = true;
-        }
+        remove = self._trigger('remove', [$item.data('manifest'), $item]);
 
         if (remove !== false) {
           $item.remove();
@@ -278,27 +268,40 @@
     // Remove the elements, events, and functionality of this plugin and return
     // the input to its original state.
     destroy: function () {
-      // Destroy Marco Polo.
-      this.$input.marcoPolo('destroy');
+      var self = this;
 
-      this.$list.remove();
-      this.$measure.remove();
-      this.$input
+      // Destroy Marco Polo.
+      self.$input.marcoPolo('destroy');
+
+      self.$list.remove();
+      self.$measure.remove();
+      self.$input
         .unwrap()
         .removeClass('mf_input')
         // Set the input back to its original width.
-        .width(this.originalWidth);
+        .width(self.originalWidth);
 
       $(document).unbind('.manifest');
 
       // Parent destroy removes the input's data and events.
-      $.Widget.prototype.destroy.apply(this, arguments);
+      $.Widget.prototype.destroy.apply(self, arguments);
+    },
+
+    // Trigger a callback subscribed to via an option or using .bind().
+    _trigger: function (name, params) {
+      var self = this,
+          callbackName = 'on' + name.charAt(0).toUpperCase() + name.slice(1),
+          triggerName = 'manifest' + name.toLowerCase(),
+          callback = self.options[callbackName];
+
+      self.$input.trigger(triggerName, params);
+
+      return callback && callback.apply(self.$input, params);
     },
 
     // Build the element to be used to measure the width of the input value.
     _buildMeasure: function () {
-      var self = this,
-          $input = this.$input;
+      var $input = this.$input;
 
       // Give the measure the same font/text styles as the input to ensure the
       // value is rendered exactly the same.
@@ -511,36 +514,36 @@
 
     // Add the highlighted state to the specified item.
     _addHighlight: function ($item) {
+      var self = this;
+
       if (!$item.length) {
-        return this;
+        return self;
       }
 
       // The current highlight is removed to ensure that only one item is
       // highlighted at a time.
-      this._removeHighlighted();
+      self._removeHighlighted();
 
       $item.addClass('mf_highlighted');
 
-      if (this.options.onHighlight) {
-        this.options.onHighlight.call(this.$input, $item.data('marcoPolo'), $item);
-      }
+      self._trigger('highlight', [$item.data('marcoPolo'), $item]);
 
-      return this;
+      return self;
     },
 
     // Remove the highlighted state from the specified item.
     _removeHighlight: function ($item) {
+      var self = this;
+
       if (!$item.length) {
-        return this;
+        return self;
       }
 
       $item.removeClass('mf_highlighted');
 
-      if (this.options.onHighlightRemove) {
-        this.options.onHighlightRemove.call(this.$input, $item.data('marcoPolo'), $item);
-      }
+      self._trigger('highlightRemove', [$item.data('marcoPolo'), $item]);
 
-      return this;
+      return self;
     },
 
     // Remove the highlighted state from the currently highlighted item.
@@ -555,36 +558,36 @@
 
     // Add the selected state to the specified item.
     _addSelect: function ($item) {
+      var self = this;
+
       if (!$item.length) {
-        return this;
+        return self;
       }
 
       // The current selection is removed to ensure that only one item is
       // selected at a time.
-      this._removeSelected();
+      self._removeSelected();
 
       $item.addClass('mf_selected');
 
-      if (this.options.onSelect) {
-        this.options.onSelect.call(this.$input, $item.data('marcoPolo'), $item);
-      }
+      self._trigger('select', [$item.data('marcoPolo'), $item]);
 
-      return this;
+      return self;
     },
 
     // Remove the selected state from the specified item.
     _removeSelect: function ($item) {
+      var self = this;
+
       if (!$item.length) {
-        return this;
+        return self;
       }
 
       $item.removeClass('mf_selected');
 
-      if (this.options.onSelectRemove) {
-        this.options.onSelectRemove.call(this.$input, $item.data('marcoPolo'), $item);
-      }
+      self._trigger('selectRemove', [$item.data('marcoPolo'), $item]);
 
-      return this;
+      return self;
     },
 
     // Remove the selected state from the currently selected item.
@@ -604,7 +607,8 @@
 
     // Select the item before the currently selected item.
     _selectPrev: function () {
-      var $selected = this._selected(),
+      var self = this,
+          $selected = self._selected(),
           $prev = $();
 
       // Select the previous item if there's a current selection.
@@ -613,38 +617,40 @@
       }
       // Select the last item added to the list if not.
       else {
-        $prev = this.$list.children(':last');
+        $prev = self.$list.children(':last');
       }
 
       // Only change the current selection if there's a previous item. If the
       // first item in the list is the current selection, it remains selected.
       if ($prev.length) {
-        this._addSelect($prev);
+        self._addSelect($prev);
       }
 
-      return this;
+      return self;
     },
 
     // Select the item after the currently selected item.
     _selectNext: function () {
-      var $selected = this._selected(),
+      var self = this,
+          $selected = self._selected(),
           $next = $selected.next();
 
       if ($next.length) {
-        return this._addSelect($next);
+        return self._addSelect($next);
       }
       // If there's nothing after the currently selected item, remove the
       // current selection, leaving nothing selected.
       else {
-        return this._removeSelect($selected);
+        return self._removeSelect($selected);
       }
     },
 
     // Resize the input to fit the current value with space for the next
     // character.
     _resizeInput: function () {
-      var $input = this.$input,
-          $measure = this.$measure,
+      var self = this,
+          $input = self.$input,
+          $measure = self.$measure,
           // Escape all HTML special characters for measuring.
           escapedVal = $input.val()
                          .replace(/&/g, '&amp;')
@@ -659,7 +665,7 @@
       // space for the next character.
       $input.width($measure.width());
 
-      return this;
+      return self;
     }
   });
 })(jQuery);
