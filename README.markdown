@@ -26,7 +26,7 @@ Features
     processed?
 *   **Autocomplete functionality.**
     [Marco Polo](https://github.com/jstayton/jquery-marcopolo) is built-in to
-    provide bulletproof autocomplete functionality. And it's from the same
+    provide autocomplete functionality if needed. And it's from the same
     developer as Manifest (_why am I talking in the third person?_), so you can
     trust in the quality of the code and integration.
 *   **Arbitrary values.** Limit selection strictly to the autocomplete results,
@@ -74,7 +74,9 @@ Notice the _marcoPolo_ option object.
 autocomplete functionality within Manifest, and the option object allows any of
 Marco Polo's options to be configured through Manifest. Be sure to read through
 Marco Polo's documentation for how it works and what's possible, including
-details on returning results in JSON format from your data source _url_.
+details on returning results in JSON format from your data source _url_. If you
+don't require autocomplete functionality, simply set the _marcoPolo_ option to
+_false_.
 
 Once you have autocomplete results working through Marco Polo, select a few of
 those results for submission. Manifest stores each item value in an array named
@@ -102,18 +104,20 @@ some of the more advanced guides:
 Options
 -------
 
-*   **marcoPolo** _object_
+*   **marcoPolo** _object, false_
 
-    Options to pass on to Marco Polo.
+    Options to pass on to Marco Polo for autocomplete functionality. Set to
+    _false_ if such functionality is unnecessary.
 
     _Default:_ {}
 
     ---------------------------------------------------------------------------
 *   **required** _boolean_
 
-    Whether to only allow items to be selected from the results list. If
-    _false_, arbitrary, non-results-list values can be added when the
-    _separator_ key character is pressed or the input is blurred.
+    Whether to only allow items to be selected from the autocomplete results
+    list when autocomplete is enabled. If _false_, arbitrary, non-results-list
+    values can be added when the _separator_ key character is pressed or the
+    input is blurred.
 
     _Default:_ false
 

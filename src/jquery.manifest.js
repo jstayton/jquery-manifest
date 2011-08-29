@@ -96,11 +96,7 @@
           }
 
           // Add the selected Marco Polo item to the Manifest list.
-          self.add(mpData, $mpItem);
-
-          $mpInput.marcoPolo('change', '');
-
-          self._resizeInput();
+          self._add(mpData, $mpItem);
         },
         required: options.required
       };
@@ -137,11 +133,13 @@
       // Make note of the original input width in case 'destroy' is called.
       self.originalWidth = self.$input.css('width');
 
-      // Bind the necessary events.
+      if (self.options.marcoPolo) {
+        self._bindMarcoPolo();
+      }
+
       self
         ._bindInput()
         ._bindList()
-        ._bindMarcoPoloList()
         ._bindContainer()
         ._bindDocument();
 
@@ -156,18 +154,38 @@
 
     // Set an option.
     _setOption: function (option, value) {
-      var self = this;
+      var self = this,
+          $input = self.$input;
 
       switch (option) {
         case 'marcoPolo':
-          // Pass changes on to Marco Polo, with the options required for this
-          // plugin to work overriding the custom options.
-          self.$input.marcoPolo('option', $.extend({}, value, self._marcoPoloOptions()));
+          // If Marco Polo is enabled, change the existing instance.
+          if (self.options.marcoPolo) {
+            if (value) {
+              // Pass changes on to Marco Polo, with the options required for
+              // this plugin to work overriding the custom options.
+              $input.marcoPolo('option', $.extend({}, value, self._marcoPoloOptions()));
+            }
+            else {
+              $input.marcoPolo('destroy');
+            }
+          }
+          // Otherwise, bind Marco Polo with the specified options.
+          else if (value) {
+            self._bindMarcoPolo($.extend({}, value, self._marcoPoloOptions()));
+
+            // Move the Marco Polo results list outside of and after the
+            // container. $input.parent() is used instead of self.$container
+            // due to the latter not knowing its location in the DOM.
+            $input.marcoPolo('list').insertAfter($input.parent());
+          }
 
           break;
 
         case 'required':
-          self.$input.marcoPolo('option', 'required', value);
+          if (self.options.marcoPolo) {
+            $input.marcoPolo('option', 'required', value);
+          }
 
           break;
 
@@ -182,7 +200,7 @@
       }
 
       // Required call to the parent where the new option value is saved.
-      $.Widget.prototype._setOption.apply(this, arguments);
+      $.Widget.prototype._setOption.apply(self, arguments);
     },
 
     // Get the container element.
@@ -193,6 +211,27 @@
     // Get the list element.
     list: function () {
       return this.$list;
+    },
+
+    // Add an item to the end of the list. For use internally when the input
+    // value needs to be reset.
+    _add: function (data, $mpItem) {
+      var self = this,
+          $input = self.$input;
+
+      self.add(data, $mpItem);
+
+      // If Marco Polo is enabled, use its method to change the input value.
+      if (self.options.marcoPolo) {
+        $input.marcoPolo('change', '');
+      }
+      else {
+        $input.val('');
+      }
+
+      self._resizeInput();
+
+      return self;
     },
 
     // Add an item to the end of the list.
@@ -271,7 +310,9 @@
       var self = this;
 
       // Destroy Marco Polo.
-      self.$input.marcoPolo('destroy');
+      if (self.options.marcoPolo) {
+        self.$input.marcoPolo('destroy');
+      }
 
       self.$list.remove();
       self.$measure.remove();
@@ -318,13 +359,27 @@
       });
     },
 
-    // Bind the necessary events to the container.
-    _bindContainer: function () {
-      var self = this;
+    // Bind the necessary events for Marco Polo.
+    _bindMarcoPolo: function (mpOptions) {
+      var self = this,
+          $input = self.$input,
+          options = self.options;
 
-      // Focus on the input if a click happens anywhere on the container.
-      self.$container.bind('click.manifest', function () {
-        self.$input.focus();
+      // Build the Marco Polo options from existing options if none are passed
+      // in. Options required for this plugin to work override custom options.
+      if (typeof mpOptions === 'undefined') {
+        mpOptions = $.extend({}, options.marcoPolo, self._marcoPoloOptions());
+      }
+
+      $input.marcoPolo(mpOptions);
+
+      $input.marcoPolo('list').bind('mousedown.manifest', function () {
+        // If arbitrary values are allowed, track for use in document 'mouseup'
+        // so the current input value can be added in case the 'mouseup' ends
+        // somewhere else.
+        if (!options.required) {
+          self.mpMousedown = true;
+        }
       });
 
       return self;
@@ -337,9 +392,6 @@
           options = self.options;
 
       $input
-        // The Marco Polo options required for this plugin to work override any
-        // custom options.
-        .marcoPolo($.extend({}, options.marcoPolo, self._marcoPoloOptions()))
         .bind('keydown.manifest', function (key) {
           self._resizeInput();
 
@@ -392,11 +444,7 @@
 
             // Add the current input value if there is any.
             if ($input.val()) {
-              self.add($input.val(), null);
-
-              $input.marcoPolo('change', '');
-
-              self._resizeInput();
+              self._add($input.val(), null);
             }
           }
         })
@@ -417,31 +465,10 @@
             // event, add the current input value if arbitrary values are
             // allowed.
             if (!self.mpMousedown && !options.required && $input.val()) {
-              self.add($input.val(), null);
-
-              $input.marcoPolo('change', '');
-
-              self._resizeInput();
+              self._add($input.val(), null);
             }
           }, 1);
         });
-
-      return self;
-    },
-
-    // Bind the necessary events to the Marco Polo list.
-    _bindMarcoPoloList: function () {
-      var self = this,
-          $mpList = self.$input.marcoPolo('list');
-
-      $mpList.bind('mousedown.manifest', function () {
-        // If arbitrary values are allowed, track for use in document 'mouseup'
-        // so the current input value can be added in case the 'mouseup' ends
-        // somewhere else.
-        if (!self.options.required) {
-          self.mpMousedown = true;
-        }
-      });
 
       return self;
     },
@@ -495,13 +522,21 @@
           self.mpMousedown = false;
 
           if ($input.val()) {
-            self.add($input.val(), null);
-
-            $input.marcoPolo('change', '');
-
-            self._resizeInput();
+            self._add($input.val(), null);
           }
         }
+      });
+
+      return self;
+    },
+
+    // Bind the necessary events to the container.
+    _bindContainer: function () {
+      var self = this;
+
+      // Focus on the input if a click happens anywhere on the container.
+      self.$container.bind('click.manifest', function () {
+        self.$input.focus();
       });
 
       return self;
