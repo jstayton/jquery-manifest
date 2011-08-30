@@ -332,7 +332,7 @@
     _trigger: function (name, params) {
       var self = this,
           callbackName = 'on' + name.charAt(0).toUpperCase() + name.slice(1),
-          triggerName = 'manifest' + name.toLowerCase(),
+          triggerName = self.widgetEventPrefix.toLowerCase() + name.toLowerCase(),
           callback = self.options[callbackName];
 
       self.$input.trigger(triggerName, params);
