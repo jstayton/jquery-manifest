@@ -77,22 +77,21 @@
     // Marco Polo options required for this plugin to work.
     _marcoPoloOptions: function () {
       var self = this,
-          $input = self.$input,
           options = self.options;
 
       return {
-        onFocus: function ($mpInput, $mpList) {
+        onFocus: function () {
           // Allow for custom callback.
           if (options.marcoPolo.onFocus) {
-            options.marcoPolo.onFocus.call($mpInput, $mpInput, $mpList);
+            options.marcoPolo.onFocus.call(this);
           }
 
           self._resizeInput();
         },
-        onSelect: function (mpData, $mpItem, $mpInput, $mpList) {
+        onSelect: function (mpData, $mpItem) {
           // Allow for custom callback.
           if (options.marcoPolo.onSelect) {
-            options.marcoPolo.onSelect.call($mpInput, mpData, $mpItem, $mpInput, $mpList);
+            options.marcoPolo.onSelect.call(this, mpData, $mpItem);
           }
 
           // Add the selected Marco Polo item to the Manifest list.
@@ -329,15 +328,15 @@
     },
 
     // Trigger a callback subscribed to via an option or using .bind().
-    _trigger: function (name, params) {
+    _trigger: function (name, args) {
       var self = this,
           callbackName = 'on' + name.charAt(0).toUpperCase() + name.slice(1),
           triggerName = self.widgetEventPrefix.toLowerCase() + name.toLowerCase(),
           callback = self.options[callbackName];
 
-      self.$input.trigger(triggerName, params);
+      self.element.trigger(triggerName, args);
 
-      return callback && callback.apply(self.$input, params);
+      return callback && callback.apply(self.element, args);
     },
 
     // Build the element to be used to measure the width of the input value.
