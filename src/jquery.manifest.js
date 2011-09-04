@@ -122,7 +122,7 @@
       // Create an empty list that items will be added to.
       self.$list = $('<ol class="mf_list" />');
 
-      self.$measure = self._buildMeasure();
+      self.$measure = $('<measure class="mf_measure" />');
 
       // For keeping track of whether a 'mousedown' event has caused an input
       // 'blur' event.
@@ -148,7 +148,13 @@
         .before(self.$list)
         .after(self.$measure);
 
-      self._resizeInput();
+      // Because .wrap() only makes a copy of the wrapper, get the actual
+      // container that was inserted into the DOM.
+      self.$container = self.$input.parent();
+
+      self
+        ._styleMeasure()
+        ._resizeInput();
     },
 
     // Set an option.
@@ -339,25 +345,6 @@
       return callback && callback.apply(self.element, args);
     },
 
-    // Build the element to be used to measure the width of the input value.
-    _buildMeasure: function () {
-      var $input = this.$input;
-
-      // Give the measure the same font/text styles as the input to ensure the
-      // value is rendered exactly the same.
-      return $('<measure class="mf_measure" />').css({
-        fontFamily: $input.css('fontFamily'),
-        fontSize: $input.css('fontSize'),
-        fontWeight: $input.css('fontWeight'),
-        left: -9999,
-        letterSpacing: $input.css('letterSpacing'),
-        position: 'absolute',
-        top: -9999,
-        whiteSpace: 'nowrap',
-        width: 'auto'
-      });
-    },
-
     // Bind the necessary events for Marco Polo.
     _bindMarcoPolo: function (mpOptions) {
       var self = this,
@@ -500,6 +487,18 @@
       return self;
     },
 
+    // Bind the necessary events to the container.
+    _bindContainer: function () {
+      var self = this;
+
+      // Focus on the input if a click happens anywhere on the container.
+      self.$container.bind('click.manifest', function () {
+        self.$input.focus();
+      });
+
+      return self;
+    },
+
     // Bind the necessary events to the document.
     _bindDocument: function () {
       var self = this,
@@ -529,14 +528,67 @@
       return self;
     },
 
-    // Bind the necessary events to the container.
-    _bindContainer: function () {
-      var self = this;
+    // Style the measure to match the text style of the input, so that text
+    // measurements are pixel precise.
+    _styleMeasure: function () {
+      var self = this,
+          $input = self.$input;
 
-      // Focus on the input if a click happens anywhere on the container.
-      self.$container.bind('click.manifest', function () {
-        self.$input.focus();
+      self.$measure.css({
+        fontFamily: $input.css('font-family'),
+        fontSize: $input.css('font-size'),
+        fontWeight: $input.css('font-weight'),
+        left: -9999,
+        letterSpacing: $input.css('letter-spacing'),
+        position: 'absolute',
+        top: -9999,
+        whiteSpace: 'nowrap',
+        width: 'auto'
       });
+
+      return self;
+    },
+
+    // Measure the width of a string of text in the style of the input.
+    _measureText: function (text) {
+      var $measure = this.$measure,
+          escapedText;
+
+      // Escape certain HTML special characters.
+      escapedText = text
+                      .replace(/&/g, '&amp;')
+                      .replace(/\s/g, '&nbsp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;');
+
+      $measure.html(escapedText);
+
+      return $measure.width();
+    },
+
+    // Get the maximum width the input can be resized to without overflowing
+    // the container. Takes into account the input's margin, border, padding.
+    _maxInputWidth: function () {
+      var self = this,
+          $container = self.$container,
+          $input = self.$input;
+
+      return $container.width() - ($input.outerWidth(true) - $input.width());
+    },
+
+    // Resize the input to fit the current value with space for the next
+    // character.
+    _resizeInput: function () {
+      var self = this,
+          $input = self.$input,
+          textWidth;
+
+      // '---' adds enough space for whatever the next character may be.
+      textWidth = self._measureText($input.val() + '---');
+
+      // Set the input's width to the size of the text, making sure not to set
+      // it wider than the container.
+      $input.width(Math.min(textWidth, self._maxInputWidth()));
 
       return self;
     },
@@ -677,29 +729,6 @@
       else {
         return self._removeSelect($selected);
       }
-    },
-
-    // Resize the input to fit the current value with space for the next
-    // character.
-    _resizeInput: function () {
-      var self = this,
-          $input = self.$input,
-          $measure = self.$measure,
-          // Escape all HTML special characters for measuring.
-          escapedVal = $input.val()
-                         .replace(/&/g, '&amp;')
-                         .replace(/\s/g, '&nbsp;')
-                         .replace(/</g, '&lt;')
-                         .replace(/>/g, '&gt;');
-
-      // '---' adds enough space for whatever the next character may be.
-      $measure.html(escapedVal + '---');
-
-      // The measure width now represents the width of the input value with
-      // space for the next character.
-      $input.width($measure.width());
-
-      return self;
     }
   });
 })(jQuery);
