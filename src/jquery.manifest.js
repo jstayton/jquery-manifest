@@ -208,6 +208,196 @@
       $.Widget.prototype._setOption.apply(self, arguments);
     },
 
+    // Bind the necessary events for Marco Polo.
+    _bindMarcoPolo: function (mpOptions) {
+      var self = this,
+          $input = self.$input,
+          options = self.options;
+
+      // Build the Marco Polo options from existing options if none are passed
+      // in. Options required for this plugin to work override custom options.
+      if (typeof mpOptions === 'undefined') {
+        mpOptions = $.extend({}, options.marcoPolo, self._marcoPoloOptions());
+      }
+
+      $input.marcoPolo(mpOptions);
+
+      $input.marcoPolo('list').bind('mousedown.manifest', function () {
+        // For use in input 'blur' and document 'mouseup' to make sure the
+        // current input value is either added or removed.
+        self.mpMousedown = true;
+      });
+
+      return self;
+    },
+
+    // Bind the necessary events to the input.
+    _bindInput: function () {
+      var self = this,
+          $input = self.$input,
+          options = self.options;
+
+      $input
+        .bind('keydown.manifest', function (key) {
+          self._resizeInput();
+
+          // Keyboard navigation only works without an input value.
+          if ($input.val()) {
+            return;
+          }
+
+          switch (key.which) {
+            // Remove the selected item.
+            case self.keys.BACKSPACE:
+            case self.keys.DELETE:
+              var $selected = self._selected();
+
+              if ($selected.length) {
+                self.remove($selected);
+              }
+              else {
+                self._selectPrev();
+              }
+
+              break;
+
+            // Select the previous item.
+            case self.keys.LEFT:
+              self._selectPrev();
+
+              break;
+
+            // Select the next item.
+            case self.keys.RIGHT:
+              self._selectNext();
+
+              break;
+
+            // Any other key removes the selected state from the current item.
+            default:
+              self._removeSelected();
+
+              break;
+          }
+        })
+        .bind('keypress.manifest', function (key) {
+          // If arbitrary values are allowed, add the current input value if
+          // the separator key is pressed.
+          if (!options.required && key.which === options.separator.charCodeAt()) {
+            // Prevent the separator key character from being added to the
+            // input value.
+            key.preventDefault();
+
+            // Add the current input value if there is any.
+            if ($input.val()) {
+              self._add($input.val(), null);
+            }
+          }
+        })
+        .bind('keyup.manifest', function (key) {
+          self._resizeInput();
+        })
+        .bind('blur.manifest', function () {
+          // 1ms timeout ensures that whatever 'mousedown' event caused this
+          // 'blur' event fires first.
+          setTimeout(function () {
+            // If a list item 'mousedown' event did not cause this 'blur'
+            // event, make sure nothing is left selected.
+            if (!self.mousedown) {
+              self._removeSelected();
+            }
+
+            // If a Marco Polo list 'mousedown' event did not cause this 'blur'
+            // event, add the current input value if arbitrary values are
+            // allowed.
+            if (!self.mpMousedown) {
+              if (options.required) {
+                self._resizeInput();
+              }
+              else if ($input.val()) {
+                self._add($input.val(), null);
+              }
+            }
+          }, 1);
+        });
+
+      return self;
+    },
+
+    // Bind the necessary events to the list.
+    _bindList: function () {
+      var self = this;
+
+      self.$list
+        .delegate('li', 'mouseover', function () {
+          self._addHighlight($(this));
+        })
+        .delegate('li', 'mouseout', function () {
+          self._removeHighlight($(this));
+        })
+        .delegate('li', 'mousedown', function () {
+          // For use in input 'blur' and document 'mouseup' to make sure
+          // nothing is left selected if this 'mousedown' ends elsewhere.
+          self.mousedown = true;
+        })
+        .delegate('li', 'click', function () {
+          self._toggleSelect($(this));
+        })
+        .delegate('a.mf_remove', 'click', function (event) {
+          self.remove($(this).closest('li'));
+
+          event.preventDefault();
+        });
+
+      return self;
+    },
+
+    // Bind the necessary events to the container.
+    _bindContainer: function () {
+      var self = this;
+
+      // Focus on the input if a click happens anywhere on the container.
+      self.$container.bind('click.manifest', function () {
+        self.$input.focus();
+      });
+
+      return self;
+    },
+
+    // Bind the necessary events to the document.
+    _bindDocument: function () {
+      var self = this,
+          $input = self.$input;
+
+      $(document).bind('mouseup.manifest', function (event) {
+        // If a 'mousedown' event starts on a list item, but ends somewhere
+        // else, make sure nothing is left selected.
+        if (self.mousedown) {
+          self.mousedown = false;
+
+          if (!$(event.target).is('li.mf_item, li.mf_item *')) {
+            self._removeSelected();
+          }
+        }
+
+        // If a 'mousedown' event starts on a Marco Polo list item, but ends
+        // somewhere else, add the current input value if arbitrary values are
+        // allowed.
+        if (self.mpMousedown) {
+          self.mpMousedown = false;
+
+          if (self.options.required) {
+            self._resizeInput();
+          }
+          else if ($input.val()) {
+            self._add($input.val(), null);
+          }
+        }
+      });
+
+      return self;
+    },
+
     // Get the container element.
     container: function () {
       return this.$container;
@@ -331,201 +521,6 @@
 
       // Parent destroy removes the input's data and events.
       $.Widget.prototype.destroy.apply(self, arguments);
-    },
-
-    // Trigger a callback subscribed to via an option or using .bind().
-    _trigger: function (name, args) {
-      var self = this,
-          callbackName = 'on' + name.charAt(0).toUpperCase() + name.slice(1),
-          triggerName = self.widgetEventPrefix.toLowerCase() + name.toLowerCase(),
-          callback = self.options[callbackName];
-
-      self.element.trigger(triggerName, args);
-
-      return callback && callback.apply(self.element, args);
-    },
-
-    // Bind the necessary events for Marco Polo.
-    _bindMarcoPolo: function (mpOptions) {
-      var self = this,
-          $input = self.$input,
-          options = self.options;
-
-      // Build the Marco Polo options from existing options if none are passed
-      // in. Options required for this plugin to work override custom options.
-      if (typeof mpOptions === 'undefined') {
-        mpOptions = $.extend({}, options.marcoPolo, self._marcoPoloOptions());
-      }
-
-      $input.marcoPolo(mpOptions);
-
-      $input.marcoPolo('list').bind('mousedown.manifest', function () {
-        // If arbitrary values are allowed, track for use in document 'mouseup'
-        // so the current input value can be added in case the 'mouseup' ends
-        // somewhere else.
-        if (!options.required) {
-          self.mpMousedown = true;
-        }
-      });
-
-      return self;
-    },
-
-    // Bind the necessary events to the input.
-    _bindInput: function () {
-      var self = this,
-          $input = self.$input,
-          options = self.options;
-
-      $input
-        .bind('keydown.manifest', function (key) {
-          self._resizeInput();
-
-          // Keyboard navigation only works without an input value.
-          if ($input.val()) {
-            return;
-          }
-
-          switch (key.which) {
-            // Remove the selected item.
-            case self.keys.BACKSPACE:
-            case self.keys.DELETE:
-              var $selected = self._selected();
-
-              if ($selected.length) {
-                self.remove($selected);
-              }
-              else {
-                self._selectPrev();
-              }
-
-              break;
-
-            // Select the previous item.
-            case self.keys.LEFT:
-              self._selectPrev();
-
-              break;
-
-            // Select the next item.
-            case self.keys.RIGHT:
-              self._selectNext();
-
-              break;
-
-            // Any other key removes the selected state from the current item.
-            default:
-              self._removeSelected();
-
-              break;
-          }
-        })
-        .bind('keypress.manifest', function (key) {
-          // If arbitrary values are allowed, add the current input value if
-          // the separator key is pressed.
-          if (!options.required && key.which === options.separator.charCodeAt()) {
-            // Prevent the separator key character from being added to the
-            // input value.
-            key.preventDefault();
-
-            // Add the current input value if there is any.
-            if ($input.val()) {
-              self._add($input.val(), null);
-            }
-          }
-        })
-        .bind('keyup.manifest', function (key) {
-          self._resizeInput();
-        })
-        .bind('blur.manifest', function () {
-          // 1ms timeout ensures that whatever 'mousedown' event caused this
-          // 'blur' event fires first.
-          setTimeout(function () {
-            // If a list item 'mousedown' event did not cause this 'blur'
-            // event, make sure nothing is left selected.
-            if (!self.mousedown) {
-              self._removeSelected();
-            }
-
-            // If a Marco Polo list 'mousedown' event did not cause this 'blur'
-            // event, add the current input value if arbitrary values are
-            // allowed.
-            if (!self.mpMousedown && !options.required && $input.val()) {
-              self._add($input.val(), null);
-            }
-          }, 1);
-        });
-
-      return self;
-    },
-
-    // Bind the necessary events to the list.
-    _bindList: function () {
-      var self = this;
-
-      self.$list
-        .delegate('li', 'mouseover', function () {
-          self._addHighlight($(this));
-        })
-        .delegate('li', 'mouseout', function () {
-          self._removeHighlight($(this));
-        })
-        .delegate('li', 'mousedown', function () {
-          // For use in input 'blur' and document 'mouseup' to make sure
-          // nothing is left selected if this 'mousedown' ends elsewhere.
-          self.mousedown = true;
-        })
-        .delegate('li', 'click', function () {
-          self._toggleSelect($(this));
-        })
-        .delegate('a.mf_remove', 'click', function (event) {
-          self.remove($(this).closest('li'));
-
-          event.preventDefault();
-        });
-
-      return self;
-    },
-
-    // Bind the necessary events to the container.
-    _bindContainer: function () {
-      var self = this;
-
-      // Focus on the input if a click happens anywhere on the container.
-      self.$container.bind('click.manifest', function () {
-        self.$input.focus();
-      });
-
-      return self;
-    },
-
-    // Bind the necessary events to the document.
-    _bindDocument: function () {
-      var self = this,
-          $input = self.$input;
-
-      $(document).bind('mouseup.manifest', function (event) {
-        // If a 'mousedown' event starts on a list item, but ends somewhere
-        // else, make sure nothing is left selected.
-        if (self.mousedown && !$(event.target).is('li.mf_item, li.mf_item *')) {
-          self.mousedown = false;
-
-          self._removeSelected();
-        }
-
-        // If a 'mousedown' event starts on a Marco Polo list item, but ends
-        // somewhere else, add the current input value if arbitrary values are
-        // allowed.
-        if (self.mpMousedown && !self.options.required) {
-          self.mpMousedown = false;
-
-          if ($input.val()) {
-            self._add($input.val(), null);
-          }
-        }
-      });
-
-      return self;
     },
 
     // Style the measure to match the text style of the input, so that text
@@ -729,6 +724,18 @@
       else {
         return self._removeSelect($selected);
       }
+    },
+
+    // Trigger a callback subscribed to via an option or using .bind().
+    _trigger: function (name, args) {
+      var self = this,
+          callbackName = 'on' + name.charAt(0).toUpperCase() + name.slice(1),
+          triggerName = self.widgetEventPrefix.toLowerCase() + name.toLowerCase(),
+          callback = self.options[callbackName];
+
+      self.element.trigger(triggerName, args);
+
+      return callback && callback.apply(self.element, args);
     }
   });
 })(jQuery);
