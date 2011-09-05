@@ -10,7 +10,7 @@
  * Released under the MIT License
  * http://en.wikipedia.org/wiki/MIT_License
  */
-(function ($) {
+(function ($, undefined) {
   'use strict';
 
   // jQuery UI's Widget Factory provides an object-oriented plugin framework
@@ -216,7 +216,7 @@
 
       // Build the Marco Polo options from existing options if none are passed
       // in. Options required for this plugin to work override custom options.
-      if (typeof mpOptions === 'undefined') {
+      if (mpOptions === undefined) {
         mpOptions = $.extend({}, options.marcoPolo, self._marcoPoloOptions());
       }
 
