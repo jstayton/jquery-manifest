@@ -8,16 +8,37 @@ div#container {
   width: 780px;
 }
 
+a {
+  color: #000000;
+}
+
+em {
+  font-style: italic;
+}
+
 h1 {
   font-size: 1.8em;
   margin-bottom: 40px;
 }
 
-
 h2 {
   color: #C0C0C0;
   font-size: 1.2em;
   margin: 20px 0;
+}
+
+ol#examples {
+  list-style-type: square;
+  margin-left: 20px;
+}
+
+ol#examples li {
+  line-height: 1.4em;
+  margin-bottom: 20px;
+}
+
+pre {
+  line-height: 1.4em;
 }
 
 form img {
@@ -30,68 +51,69 @@ form.mp_busy img {
   display: inline;
 }
 
+/*** Manifest ***/
+
+/* Manifest container that wraps the elements and now acts as, and should be
+   styled as, the input. */
 div.mf_container {
   border: 1px solid #000000;
   cursor: text;
-  min-height: 30px;
   padding: 2px;
-	width: 494px;
+  width: 494px;
 }
 
-ol.mf_list {
-  background-color: #FFFFFF;
-  border: 0;
+/* Ordered list for displaying selected items. */
+div.mf_container ol.mf_list {
   display: inline;
-  font: inherit;
-  font-size: 100%;
-  list-style: none;
-  margin: 0;
-  outline: 0;
-  overflow: hidden;
-  padding: 0;
-  vertical-align: baseline;
 }
 
-ol.mf_list li {
+/* Selected item, regardless of state (highlighted, selected). */
+div.mf_container ol.mf_list li.mf_item {
   border: 1px solid #C0C0C0;
   cursor: pointer;
   display: inline-block;
   margin: 2px;
-  outline: 0;
-  padding: 4px;
+  padding: 4px 4px 5px;
 }
 
-ol.mf_list li.mf_highlighted {
+/* Selected item that's highlighted by mouseover. */
+div.mf_container ol.mf_list li.mf_item.mf_highlighted {
   background-color: #E0E0E0;
 }
 
-ol.mf_list li.mf_selected {
+/* Selected item that's selected by click or keyboard. */
+div.mf_container ol.mf_list li.mf_item.mf_selected {
   background-color: #C0C0C0;
 }
 
-ol.mf_list li a.mf_remove {
+/* Remove link. */
+div.mf_container ol.mf_list li.mf_item a.mf_remove {
   color: #E0E0E0;
   margin-left: 10px;
   text-decoration: none;
 }
 
-ol.mf_list li.mf_highlighted a {
+/* Remove link that's highlighted. */
+div.mf_container ol.mf_list li.mf_item.mf_highlighted a.mf_remove {
   color: #FFFFFF;
 }
 
-ol.mf_list li.mf_selected a {
+/* Remove link that's selected. */
+div.mf_container ol.mf_list li.mf_item.mf_selected a.mf_remove {
   color: #FFFFFF;
 }
 
-input {
-  border: 1px solid #000000;
+/* Actual input, styled to be invisible within the container. */
+div.mf_container input.mf_input {
   border: 0;
   font: inherit;
   font-size: 100%;
   margin: 2px;
   outline: none;
-  padding-left: 4px;
+  padding: 4px;
 }
+
+/*** Marco Polo ***/
 
 /* The unordered list inserted directly after the input field. */
 ol.mp_list {

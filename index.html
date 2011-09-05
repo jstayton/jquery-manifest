@@ -1,42 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Manifest &mdash; Example</title>
+    <title>Manifest &mdash; Examples</title>
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.manifest.min.js"></script>
-    <script type="text/javascript">
-      $(function() {
-        $('#twitterUserSearch').manifest({
-          marcoPolo: {
-            data: {
-              apikey: 'api_test-W1cipwpcdu9Cbd9pmm8D4Cjc469',
-            },
-            formatData: function (data) {
-              return data.results.slice(0, 20);
-            },
-            formatItem: function (data, $item) {
-              return data.screen_name;
-            },
-            onSelect: function (data, $item) {
-              this.val(data.screen_name);
-            }
-          },
-          required: true
-        });
-      });
-    </script>
   </head>
   <body>
     <div id="container">
       <h1>Manifest</h1>
-      <h2>Try it Out</h2>
-      <form action="http://api.infochimps.com/social/network/tw/search/people_search" method="get">
-        <input type="text" name="twitterUserSearch" id="twitterUserSearch" />
-        <img src="img/busy.gif" />
-      </form>
-      <!-- <h2>How it Works</h2> -->
+      <h2>Examples</h2>
+      <ol id="examples">
+        <li>
+          <h3><a href="example1.html">Example 1</a></h3>
+          <p>A default instance, allowing arbitrary values separated by a comma.</p>
+          <p>Uses: <em>no options</em></p>
+        </li>
+        <li>
+          <h3><a href="example2.html">Example 2</a></h3>
+          <p>Select multiple Twitter users by searching their profile info.</p>
+          <p>Uses: <em>marcoPolo</em>, <em>required</em></p>
+        </li>
+      </ol>
     </div>
   </body>
 </html>
