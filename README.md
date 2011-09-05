@@ -1,8 +1,7 @@
 Manifest
 ========
 
-A jQuery plugin that greatly improves the user experience in selecting multiple
-values for a single form field.
+A jQuery plugin that adds delight to selecting multiple values for an input.
 
 The _recipients_ field in an email app is a perfect example. You _could_ just
 offer a plain text input field, requiring the user to manually separate each
@@ -37,6 +36,13 @@ Features
     your needs and aesthetic.
 *   **Callbacks for all major events.** Add your own twist when an item is
     added, removed, selected, highlighted, and more.
+*   **Maintained.** You can very much believe that this plugin will remain
+    bug-free and up-to-date. Any feature requests, bug reports, or feedback you
+    submit will be responded to quickly as well.
+*   **Documented.** I believe that code is only as useful as its documentation.
+    This manifests itself not only in clear and thorough developer
+    documentation (below), but also verbose documentation within the code
+    itself.
 
 Requirements
 ------------
@@ -101,6 +107,12 @@ some of the more advanced guides:
 *   [CSS Starter Template](https://github.com/jstayton/jquery-manifest/wiki/CSS-Starter-Template)
 *   [HTML Breakdown](https://github.com/jstayton/jquery-manifest/wiki/HTML-Breakdown)
 
+Feedback
+--------
+
+Please open an issue to request a feature or submit a bug report. Or even if
+you just want to provide some feedback, I'd love to hear.
+
 Options
 -------
 
@@ -109,7 +121,7 @@ Options
     Options to pass on to Marco Polo for autocomplete functionality. Set to
     _false_ if such functionality is unnecessary.
 
-    _Default:_ {}
+    _Default:_ false
 
     ---------------------------------------------------------------------------
 *   **required** _boolean_
@@ -437,9 +449,3 @@ Methods
     *   **selector** _jQuery object, selector_ Specific jQuery list item object
                                                or any selector accepted by
                                                .children().
-
-Feedback
---------
-
-Please open an issue to request a feature or submit a bug report. Or even if
-you just want to provide some feedback, I'd love to hear.

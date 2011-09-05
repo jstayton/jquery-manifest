@@ -1,8 +1,7 @@
 /**
  * Manifest v1.0.0
  *
- * A jQuery plugin that greatly improves the user experience in selecting
- * multiple values for a single form field.
+ * A jQuery plugin that adds delight to selecting multiple values for an input.
  *
  * https://github.com/jstayton/jquery-manifest
  *
@@ -45,7 +44,7 @@
         }
       },
       // Options to pass on to Marco Polo.
-      marcoPolo: {},
+      marcoPolo: false,
       // Called when an item is added to the list. Return 'false' to prevent
       // the item from being added.
       onAdd: null,
@@ -308,12 +307,13 @@
             }
 
             // If a Marco Polo list 'mousedown' event did not cause this 'blur'
-            // event, add the current input value if arbitrary values are
-            // allowed.
+            // event...
             if (!self.mpMousedown) {
-              if (options.required) {
+              // Marco Polo will clear the input value, requiring a resize.
+              if (options.marcoPolo && options.required) {
                 self._resizeInput();
               }
+              // Add the input value since arbitrary values are allowed.
               else if ($input.val()) {
                 self._add($input.val(), null);
               }
