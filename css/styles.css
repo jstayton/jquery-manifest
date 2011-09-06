@@ -41,16 +41,6 @@ pre {
   line-height: 1.4em;
 }
 
-form img {
-  display: none;
-  margin-left: 10px;
-  vertical-align: bottom;
-}
-
-form.mp_busy img {
-  display: inline;
-}
-
 /*** Manifest ***/
 
 /* Manifest container that wraps the elements and now acts as, and should be
