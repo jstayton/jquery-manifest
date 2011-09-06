@@ -4,7 +4,7 @@ Manifest
 A jQuery plugin that adds delight to selecting multiple values for an input.
 
 The _recipients_ field in an email app is a perfect example. You _could_ just
-offer a plain text input field, requiring the user to manually separate each
+offer a plain text input, requiring the user to manually separate each
 recipient with a comma. Removing a recipient, however, is a pain: the user has
 to precisely select just the right amount of text, making sure not to
 accidentally remove too much or too little. As a discerning developer, you know
@@ -60,11 +60,11 @@ To start, make sure to include both jQuery and Manifest in your HTML:
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.manifest.min.js"></script>
 
-Next, add a text input field, if you haven't already:
+Next, add a text input, if you haven't already:
 
     <input type="text" id="recipients" name="recipients" />
 
-Then attach Manifest to the text input field in your JavaScript:
+Then attach Manifest to the text input in your JavaScript:
 
     $('#recipients').manifest({
       marcoPolo: {
@@ -86,7 +86,7 @@ _false_.
 
 Once you have autocomplete results working through Marco Polo, select a few of
 those results for submission. Manifest stores each item value in an array named
-after the text input field. In the case of this example, the field name is
+after the text input. In the case of this example, the input's name is
 _recipients_, so the array of values is named _recipients\_values_. If you dump
 the values of this array in PHP (_$\_POST['recipients\_values']_), the results
 will look something like this:
@@ -181,7 +181,7 @@ Options
     *   **$mpItem** _jQuery object, null_ Optional Marco Polo selected list
                                           item.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Return:_ _string_, _DOM element_, or _jQuery object_ to use as the
               display.
@@ -207,7 +207,7 @@ Options
     *   **$remove** _jQuery object_ Remove link.
     *   **$item** _jQuery object_ List item that will be added.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Return:_ _string_, _DOM element_, or _jQuery object_ to use as the
               display.
@@ -240,7 +240,7 @@ Options
     *   **$mpItem** _jQuery object, null_ Optional Marco Polo selected list
                                           item.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Return:_ _string_ value.
 
@@ -258,7 +258,7 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that will be added.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifestadd_ event:
 
@@ -276,7 +276,7 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's being highlighted.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifesthighlight_ event:
 
@@ -294,7 +294,7 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's no longer highlighted.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifesthighlightremove_ event:
 
@@ -313,7 +313,7 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's being removed.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifestremove_ event:
 
@@ -331,7 +331,7 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's being selected.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifestselect_ event:
 
@@ -349,7 +349,7 @@ Options
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that's no longer selected.
 
-    _this:_ Input element as a jQuery object (no need to wrap like _$(this)_).
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifestselectremove_ event:
 
