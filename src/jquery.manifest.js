@@ -121,7 +121,7 @@
       // Create an empty list that items will be added to.
       self.$list = $('<ol class="mf_list" />');
 
-      self.$measure = $('<measure class="mf_measure" />');
+      self.$measure = $('<span class="mf_measure" />');
 
       // For keeping track of whether a 'mousedown' event has caused an input
       // 'blur' event.
