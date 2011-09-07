@@ -105,33 +105,21 @@ div.mf_container input.mf_input {
 
 /*** Marco Polo ***/
 
-/* The unordered list inserted directly after the input field. */
+/* Ordered list for display results. */
 ol.mp_list {
   background-color: #FFFFFF;
-  border: 0;
   border-left: 1px solid #C0C0C0;
   border-right: 1px solid #C0C0C0;
-  font: inherit;
-  font-size: 100%;
-  list-style: none;
-  margin: 0;
-  outline: 0;
   overflow: hidden;
-  padding: 0;
   position: absolute;
-  vertical-align: baseline;
   width: 498px;
   z-index: 99999;
 }
 
 /* Each list item, regardless of success, error, etc. */
 ol.mp_list li {
-  border: 0;
   border-bottom: 1px solid #C0C0C0;
-  margin: 0;
-  outline: 0;
-  padding: 4px 4px 4px 9px;
-  vertical-align: baseline;
+  padding: 4px 4px 5px 9px;
 }
 
 /* Each list item from a successful request. */
@@ -144,7 +132,7 @@ ol.mp_list li.mp_selectable {
   cursor: pointer;
 }
 
-/* The list item that's currently highlighted. */
+/* Currently highlighted list item. */
 ol.mp_list li.mp_highlighted {
   background-color: #E0E0E0;
 }
