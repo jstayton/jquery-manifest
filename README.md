@@ -10,6 +10,9 @@ to precisely select just the right amount of text, making sure not to
 accidentally remove too much or too little. As a discerning developer, you know
 the user experience should be better. And it can be, with Manifest.
 
+Developed by [Justin Stayton](http://twitter.com/jstayton) at
+[Monk Development](http://monkdev.com).
+
 *   [Examples](http://jstayton.github.com/jquery-manifest)
 *   [Release Notes](https://github.com/jstayton/jquery-manifest/wiki/Release-Notes)
 
@@ -43,6 +46,23 @@ Features
     This manifests itself not only in clear and thorough developer
     documentation (below), but also verbose documentation within the code
     itself.
+
+What About Chosen?
+------------------
+
+[Chosen](https://github.com/harvesthq/chosen) is a great plugin for jQuery and
+Prototype that, while similar to Manifest, is different in a number of ways:
+
+*   Chosen works with a _select_ element; Manifest works with a _text input_.
+*   Chosen searches the pre-defined _option_ elements; Manifest has built-in
+    autocomplete functionality that requests results from a URL.
+*   Chosen doesn't allow arbitrary, non-_option_ values to be selected;
+    Manifest does, with or without autocomplete enabled.
+
+Chosen and Manifest were designed for different cases. If you want to make a
+_select_ element with a lot of _options_ more user-friendly, use Chosen. If you
+can't reasonably list out every possible _option_ (like all users in a system),
+or you need to allow arbitrary values (like new tags), use Manifest.
 
 Requirements
 ------------
@@ -111,7 +131,8 @@ Feedback
 --------
 
 Please open an issue to request a feature or submit a bug report. Or even if
-you just want to provide some feedback, I'd love to hear.
+you just want to provide some feedback, I'd love to hear. I'm also available on
+Twitter as [@jstayton](http://twitter.com/jstayton).
 
 Options
 -------
