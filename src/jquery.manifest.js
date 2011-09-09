@@ -1,5 +1,5 @@
 /**
- * Manifest v1.0.0
+ * Manifest v1.0.1
  *
  * A jQuery plugin that adds delight to selecting multiple values for an input.
  *
@@ -532,13 +532,17 @@
       self.$measure.css({
         fontFamily: $input.css('font-family'),
         fontSize: $input.css('font-size'),
+        fontStyle: $input.css('font-style'),
+        fontVariant: $input.css('font-variant'),
         fontWeight: $input.css('font-weight'),
         left: -9999,
         letterSpacing: $input.css('letter-spacing'),
         position: 'absolute',
+        textTransform: $input.css('text-transform'),
         top: -9999,
         whiteSpace: 'nowrap',
-        width: 'auto'
+        width: 'auto',
+        wordSpacing: $input.css('word-spacing')
       });
 
       return self;
