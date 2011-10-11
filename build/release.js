@@ -75,7 +75,7 @@ module.exports = function (callback) {
 
     minifiedSrc = minifiedSrc.replace('@VERSION', version);
 
-    fs.writeFileSync(minifiedPath, version);
+    fs.writeFileSync(minifiedPath, minifiedSrc);
 
     fs.writeFileSync(__dirname + '/version.txt', version);
 
