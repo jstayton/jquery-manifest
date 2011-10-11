@@ -4,8 +4,10 @@
     <title>Manifest &mdash; Example 1</title>
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <script type="text/javascript" src="js/jquery.manifest.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ui.widget.min.js"></script>
+    <script type="text/javascript" src="js/jquery.marcopolo.min.js"></script>
+    <script type="text/javascript" src="js/jquery.manifest.js"></script>
     <script type="text/javascript">
       $(function() {
         $('#input').manifest();
@@ -17,7 +19,7 @@
       <h1>Manifest</h1>
       <h2>Try it Out</h2>
       <form action="#" method="post">
-        <input type="text" name="input" id="input" />
+        <input type="text" name="input" id="input" autocomplete="off" />
       </form>
       <h2>How it Works</h2>
       <script src="https://gist.github.com/1195407.js"> </script>

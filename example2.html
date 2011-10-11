@@ -4,11 +4,19 @@
     <title>Manifest &mdash; Example 2</title>
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <script type="text/javascript" src="js/jquery.manifest.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ui.widget.min.js"></script>
+    <script type="text/javascript" src="js/jquery.marcopolo.min.js"></script>
+    <script type="text/javascript" src="js/jquery.manifest.js"></script>
     <script type="text/javascript">
       $(function() {
         $('#twitterUserSearch').manifest({
+          formatDisplay: function (data, $item, $mpItem) {
+            return data.screen_name;
+          },
+          formatValue: function (data, $value, $item, $mpItem) {
+            return data.user_id;
+          },
           marcoPolo: {
             data: {
               apikey: 'api_test-W1cipwpcdu9Cbd9pmm8D4Cjc469',
