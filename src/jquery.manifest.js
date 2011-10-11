@@ -65,8 +65,11 @@
       required: false,
       // Key character to separate arbitrary, non-results-list values if
       // the 'required' option is 'false'. Pressing this will add the current
-      // input value to the list.
+      // input value to the list. Also used to split the initial input value
+      // for items.
       separator: ',',
+      // One or more initial values (string or JSON) to add to the list.
+      values: null,
       // Name of the hidden input value fields. Do not include '[]' at the end,
       // as that will be added. If unset, the default is to add '_values[]' to
       // the input name.
@@ -94,7 +97,7 @@
           }
 
           // Add the selected Marco Polo item to the Manifest list.
-          self._add(mpData, $mpItem);
+          self.add(mpData, $mpItem, true);
         },
         required: options.required
       };
@@ -104,13 +107,15 @@
     keys: {
       BACKSPACE: 8,
       DELETE: 46,
+      ENTER: 13,
       LEFT: 37,
       RIGHT: 39
     },
 
     // Initialize the plugin on an input.
     _create: function () {
-      var self = this;
+      var self = this,
+          options = self.options;
 
       // Create a more appropriately named alias for the input.
       self.$input = self.element.addClass('mf_input');
@@ -131,7 +136,7 @@
       // Make note of the original input width in case 'destroy' is called.
       self.originalWidth = self.$input.css('width');
 
-      if (self.options.marcoPolo) {
+      if (options.marcoPolo) {
         self._bindMarcoPolo();
       }
 
@@ -151,7 +156,13 @@
       // container that was inserted into the DOM.
       self.$container = self.$input.parent();
 
+      // Add any initial values to the list.
+      if (options.values) {
+        self.add(options.values);
+      }
+
       self
+        ._addInputValues()
         ._styleMeasure()
         ._resizeInput();
     },
@@ -190,6 +201,13 @@
           if (self.options.marcoPolo) {
             $input.marcoPolo('option', 'required', value);
           }
+
+          break;
+
+        case 'values':
+          // Although normally set on initialization, if this option is called
+          // later, append the values to the list just like the 'add' method.
+          self.add(value);
 
           break;
 
@@ -240,6 +258,11 @@
         .bind('keydown.manifest', function (key) {
           self._resizeInput();
 
+          // Prevent the form from submitting on enter.
+          if (key.which === self.keys.ENTER) {
+            key.preventDefault();
+          }
+
           // Keyboard navigation only works without an input value.
           if ($input.val()) {
             return;
@@ -289,7 +312,7 @@
 
             // Add the current input value if there is any.
             if ($input.val()) {
-              self._add($input.val(), null);
+              self.add($input.val(), null, true);
             }
           }
         })
@@ -315,7 +338,7 @@
               }
               // Add the input value since arbitrary values are allowed.
               else if ($input.val()) {
-                self._add($input.val(), null);
+                self.add($input.val(), null, true);
               }
             }
           }, 1);
@@ -390,7 +413,7 @@
             self._resizeInput();
           }
           else if ($input.val()) {
-            self._add($input.val(), null);
+            self.add($input.val(), null, true);
           }
         }
       });
@@ -408,67 +431,86 @@
       return this.$list;
     },
 
-    // Add an item to the end of the list. For use internally when the input
-    // value needs to be reset.
-    _add: function (data, $mpItem) {
-      var self = this,
-          $input = self.$input;
-
-      self.add(data, $mpItem);
-
-      // If Marco Polo is enabled, use its method to change the input value.
-      if (self.options.marcoPolo) {
-        $input.marcoPolo('change', '');
-      }
-      else {
-        $input.val('');
-      }
-
-      self._resizeInput();
-
-      return self;
-    },
-
-    // Add an item to the end of the list.
-    add: function (data, $mpItem) {
+    // Add one or more items to the end of the list.
+    add: function (data, $mpItem, clearInputValue) {
       var self = this,
           $input = self.$input,
           options = self.options,
-          $item = $('<li class="mf_item" />'),
-          $remove = $('<a href="#" class="mf_remove" title="Remove" />'),
-          $value = $('<input type="hidden" class="mf_value" />'),
+          // If only a single item is being added, normalize to an array.
+          values = $.isArray(data) ? data : [data],
+          value,
+          $item = $(),
+          $remove = $(),
+          $value = $(),
           add = true;
 
-      // Store the data with the item for easy access.
-      $item.data('manifest', data);
+      for (var i = 0; i < values.length; i++) {
+        value = values[i];
+        $item = $('<li class="mf_item" />');
+        $remove = $('<a href="#" class="mf_remove" title="Remove" />');
+        $value = $('<input type="hidden" class="mf_value" />');
 
-      // Format the HTML display of the item.
-      $item.html(options.formatDisplay.call($input, data, $item, $mpItem));
+        // Store the data with the item for easy access.
+        $item.data('manifest', value);
 
-      // Format the HTML display of the remove link.
-      $remove.html(options.formatRemove.call($input, $remove, $item));
+        // Format the HTML display of the item.
+        $item.html(options.formatDisplay.call($input, value, $item, $mpItem));
 
-      if (options.valuesName) {
-        $value.attr('name', options.valuesName + '[]');
+        // Format the HTML display of the remove link.
+        $remove.html(options.formatRemove.call($input, $remove, $item));
+
+        if (options.valuesName) {
+          $value.attr('name', options.valuesName + '[]');
+        }
+        // If no custom 'name' is set for the hidden input values, append
+        // '_values[]' to the input name as the default.
+        else {
+          $value.attr('name', $input.attr('name') + '_values[]');
+        }
+
+        // Format the hidden value to be submitted for the item.
+        $value.val(options.formatValue.call($input, value, $value, $item, $mpItem));
+
+        // Append the remove link and hidden values after the display elements of
+        // the item.
+        $item.append($remove, $value);
+
+        add = self._trigger('add', [value, $item]);
+
+        if (add !== false) {
+          $item.appendTo(self.$list);
+        }
       }
-      // If no custom 'name' is set for the hidden input values, append
-      // '_values[]' to the input name as the default.
-      else {
-        $value.attr('name', $input.attr('name') + '_values[]');
+
+      if (clearInputValue) {
+        self._clearInputValue();
+      }
+    },
+
+    // Add the input values specified in the 'data-values' attribute (JSON) or
+    // standard 'value' attribute (string split with 'separator').
+    _addInputValues: function () {
+      var self = this,
+          $input = self.$input,
+          data = $input.data('values'),
+          value = $input.val(),
+          values = [];
+
+      // First check if the input has a 'data-values' attribute with JSON.
+      if (data) {
+        values = $.isArray(data) ? data : [data];
+      }
+      // If not, split the current input value with the 'separator'.
+      else if (value) {
+        values = value.split(self.options.separator);
+        values = $.map(values, $.trim);
       }
 
-      // Format the hidden value to be submitted for the item.
-      $value.val(options.formatValue.call($input, data, $value, $item, $mpItem));
-
-      // Append the remove link and hidden values after the display elements of
-      // the item.
-      $item.append($remove, $value);
-
-      add = self._trigger('add', [data, $item]);
-
-      if (add !== false) {
-        $item.appendTo(self.$list);
+      if (values.length) {
+        self.add(values, null, true);
       }
+
+      return self;
     },
 
     // Remove one or more list items, specifying either jQuery objects or a
@@ -499,10 +541,24 @@
       });
     },
 
+    // Get an array of the current values.
+    values: function () {
+      var self = this,
+          $list = self.$list,
+          values = [];
+
+      $list.find('input:hidden.mf_value').each(function () {
+        values.push($(this).val());
+      });
+
+      return values;
+    },
+
     // Remove the elements, events, and functionality of this plugin and return
     // the input to its original state.
     destroy: function () {
-      var self = this;
+      var self = this,
+          valuesString = self.values().join(self.options.separator + ' ');
 
       // Destroy Marco Polo.
       if (self.options.marcoPolo) {
@@ -515,7 +571,9 @@
         .unwrap()
         .removeClass('mf_input')
         // Set the input back to its original width.
-        .width(self.originalWidth);
+        .width(self.originalWidth)
+        // Join the added item values together and set as the input value.
+        .val(valuesString);
 
       $(document).unbind('.manifest');
 
@@ -588,6 +646,24 @@
       // Set the input's width to the size of the text, making sure not to set
       // it wider than the container.
       $input.width(Math.min(textWidth, self._maxInputWidth()));
+
+      return self;
+    },
+
+    // Clear the current value of the input.
+    _clearInputValue: function () {
+      var self = this,
+          $input = self.$input;
+
+      // If Marco Polo is enabled, use its method to change the input value.
+      if (self.options.marcoPolo) {
+        $input.marcoPolo('change', '');
+      }
+      else {
+        $input.val('');
+      }
+
+      self._resizeInput();
 
       return self;
     },

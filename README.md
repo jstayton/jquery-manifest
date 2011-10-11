@@ -126,6 +126,7 @@ some of the more advanced guides:
 
 *   [CSS Starter Template](https://github.com/jstayton/jquery-manifest/wiki/CSS-Starter-Template)
 *   [HTML Breakdown](https://github.com/jstayton/jquery-manifest/wiki/HTML-Breakdown)
+*   [Adding Initial Values](https://github.com/jstayton/jquery-manifest/wiki/Adding-Initial-Values)
 
 Feedback
 --------
@@ -159,9 +160,16 @@ Options
 
     Key character to separate arbitrary, non-results-list values if the
     _required_ option is _false_. Pressing this will add the current input
-    value to the list.
+    value to the list. Also used to split the initial input value for items.
 
     _Default:_ ,
+
+    ---------------------------------------------------------------------------
+*   **values** _string, object, array_
+
+    One or more initial values to add to the list.
+
+    _Default:_ null
 
     ---------------------------------------------------------------------------
 *   **valuesName** _string, null_
@@ -381,7 +389,7 @@ Methods
 
 *   **add**
 
-    Add an item to the end of the list.
+    Add one or more items to the end of the list.
 
     _Example:_
 
@@ -392,7 +400,7 @@ Methods
 
     _Parameters:_
 
-    *   **data** _object_ Item data.
+    *   **data** _string, object, array_ Item data.
     *   **$mpItem** _jQuery object, null_ Optional Marco Polo selected list
                                           item.
 
@@ -470,3 +478,12 @@ Methods
     *   **selector** _jQuery object, selector_ Specific jQuery list item object
                                                or any selector accepted by
                                                .children().
+
+    ---------------------------------------------------------------------------
+*   **values**
+
+    Get an array of the current values.
+
+    _Example:_
+
+        $('#recipients').manifest('values');
