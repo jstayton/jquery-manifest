@@ -294,6 +294,25 @@ Options
         $(selector).bind('manifestadd', function (event, data, $item) { … });
 
     ---------------------------------------------------------------------------
+*   **onChange** (type, data, $item) _function, null_
+
+    Called when an item is added or removed from the list.
+
+    _Default:_ null
+
+    _Parameters:_
+
+    *   **type** _string_ Type of change, either "add" or "remove".
+    *   **data** _string, object_ Item data.
+    *   **$item** _jQuery object_ List item that will be added.
+
+    _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
+
+    _Bind:_ You can also bind to the _manifestadd_ event:
+
+        $(selector).bind('manifestchange', function (event, type, data, $item) { … });
+
+    ---------------------------------------------------------------------------
 *   **onHighlight** (data, $item) _function, null_
 
     Called when an item is highlighted via _mouseover_.
