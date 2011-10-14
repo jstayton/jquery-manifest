@@ -48,6 +48,8 @@
       // Called when an item is added to the list. Return 'false' to prevent
       // the item from being added.
       onAdd: null,
+      // Called when an item is added or removed from the list.
+      onChange: null,
       // Called when an item is highlighted via 'mouseover'.
       onHighlight: null,
       // Called when an item is no longer highlighted via 'mouseover'.
@@ -480,6 +482,8 @@
         if (add !== false) {
           $item.appendTo(self.$list);
         }
+
+        self._trigger('change', ['add', value, $item]);
       }
 
       if (clearInputValue) {
@@ -531,13 +535,16 @@
 
       $items.each(function () {
         var $item = $(this),
+            data = $item.data('manifest'),
             remove = true;
 
-        remove = self._trigger('remove', [$item.data('manifest'), $item]);
+        remove = self._trigger('remove', [data, $item]);
 
         if (remove !== false) {
           $item.remove();
         }
+
+        self._trigger('change', ['remove', data, $item]);
       });
     },
 
