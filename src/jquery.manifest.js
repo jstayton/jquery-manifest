@@ -448,6 +448,18 @@
 
       for (var i = 0; i < values.length; i++) {
         value = values[i];
+
+        // Trim extra spaces, tabs, and newlines from the beginning and end of
+        // the value if it's a string.
+        if (typeof value === 'string') {
+          value = $.trim(value);
+        }
+
+        // Don't add if the value is an empty string or object.
+        if (!value || $.isEmptyObject(value)) {
+          continue;
+        }
+
         $item = $('<li class="mf_item" />');
         $remove = $('<a href="#" class="mf_remove" title="Remove" />');
         $value = $('<input type="hidden" class="mf_value" />');
