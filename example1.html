@@ -10,7 +10,11 @@
     <script type="text/javascript" src="js/jquery.manifest.js"></script>
     <script type="text/javascript">
       $(function() {
-        $('#input').manifest();
+        $('#input').manifest({
+          values: ['hi', 'hello']
+        });
+
+        $('#input').manifest('add', 'baseball');
       });
     </script>
   </head>

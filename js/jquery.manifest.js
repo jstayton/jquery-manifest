@@ -99,7 +99,7 @@
           }
 
           // Add the selected Marco Polo item to the Manifest list.
-          self.add(mpData, $mpItem, true);
+          self.add(mpData, $mpItem, true, true);
         },
         required: options.required
       };
@@ -160,7 +160,7 @@
 
       // Add any initial values to the list.
       if (options.values) {
-        self.add(options.values);
+        self.add(options.values, null, false, false);
       }
 
       self
@@ -209,7 +209,7 @@
         case 'values':
           // Although normally set on initialization, if this option is called
           // later, append the values to the list just like the 'add' method.
-          self.add(value);
+          self.add(value, null, false, true);
 
           break;
 
@@ -314,7 +314,7 @@
 
             // Add the current input value if there is any.
             if ($input.val()) {
-              self.add($input.val(), null, true);
+              self.add($input.val(), null, true, true);
             }
           }
         })
@@ -340,7 +340,7 @@
               }
               // Add the input value since arbitrary values are allowed.
               else if ($input.val()) {
-                self.add($input.val(), null, true);
+                self.add($input.val(), null, true, true);
               }
             }
           }, 1);
@@ -415,7 +415,7 @@
             self._resizeInput();
           }
           else if ($input.val()) {
-            self.add($input.val(), null, true);
+            self.add($input.val(), null, true, true);
           }
         }
       });
@@ -434,7 +434,7 @@
     },
 
     // Add one or more items to the end of the list.
-    add: function (data, $mpItem, clearInputValue) {
+    add: function (data, $mpItem, clearInputValue, triggerChange) {
       var self = this,
           $input = self.$input,
           options = self.options,
@@ -448,6 +448,18 @@
 
       for (var i = 0; i < values.length; i++) {
         value = values[i];
+
+        // Trim extra spaces, tabs, and newlines from the beginning and end of
+        // the value if it's a string.
+        if (typeof value === 'string') {
+          value = $.trim(value);
+        }
+
+        // Don't add if the value is an empty string or object.
+        if (!value || $.isEmptyObject(value)) {
+          continue;
+        }
+
         $item = $('<li class="mf_item" />');
         $remove = $('<a href="#" class="mf_remove" title="Remove" />');
         $value = $('<input type="hidden" class="mf_value" />');
@@ -481,9 +493,13 @@
 
         if (add !== false) {
           $item.appendTo(self.$list);
-        }
 
-        self._trigger('change', ['add', value, $item]);
+          // Sometimes an 'onChange' event shouldn't be fired, like when
+          // initial values are added.
+          if (triggerChange || triggerChange === undefined) {
+            self._trigger('change', ['add', value, $item]);
+          }
+        }
       }
 
       if (clearInputValue) {
@@ -511,7 +527,7 @@
       }
 
       if (values.length) {
-        self.add(values, null, true);
+        self.add(values, null, true, false);
       }
 
       return self;
@@ -542,9 +558,9 @@
 
         if (remove !== false) {
           $item.remove();
-        }
 
-        self._trigger('change', ['remove', data, $item]);
+          self._trigger('change', ['remove', data, $item]);
+        }
       });
     },
 
