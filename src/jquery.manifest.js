@@ -92,6 +92,25 @@
 
           self._resizeInput();
         },
+        onRequestAfter: function () {
+          // Remove the "busy" indicator class on the container's parent.
+          self.$container.parent().removeClass('mf_busy');
+
+          // Allow for custom callback.
+          if (options.marcoPolo.onRequestAfter) {
+            options.marcoPolo.onRequestAfter.call(this);
+          }
+        },
+        onRequestBefore: function () {
+          // Add a class to the container's parent that can be hooked-into by
+          // the CSS to show a busy indicator.
+          self.$container.parent().addClass('mf_busy');
+
+          // Allow for custom callback.
+          if (options.marcoPolo.onRequestBefore) {
+            options.marcoPolo.onRequestBefore.call(this);
+          }
+        },
         onSelect: function (mpData, $mpItem) {
           // Allow for custom callback.
           if (options.marcoPolo.onSelect) {
@@ -456,7 +475,7 @@
         }
 
         // Don't add if the value is an empty string or object.
-        if (!value || $.isEmptyObject(value)) {
+        if (!value || ($.isPlainObject(value) && $.isEmptyObject(value))) {
           continue;
         }
 
