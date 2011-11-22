@@ -156,11 +156,12 @@ Options
     _Default:_ false
 
     ---------------------------------------------------------------------------
-*   **separator** _string_
+*   **separator** _string, array_
 
-    Key character to separate arbitrary, non-results-list values if the
-    _required_ option is _false_. Pressing this will add the current input
-    value to the list. Also used to split the initial input value for items.
+    One or more key characters to separate arbitrary, non-results-list values
+    if the _required_ option is _false_. Pressing one of these keys will add
+    the current input value to the list. Also used to split the initial input
+    value for items (using the first character if multiple are configured).
 
     _Default:_ ,
 

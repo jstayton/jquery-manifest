@@ -65,10 +65,11 @@
       // 'false', arbitrary, non-results-list values can be added when the
       // 'separator' key character is pressed or the input is blurred.
       required: false,
-      // Key character to separate arbitrary, non-results-list values if
-      // the 'required' option is 'false'. Pressing this will add the current
-      // input value to the list. Also used to split the initial input value
-      // for items.
+      // One or more key characters to separate arbitrary, non-results-list
+      // values if the 'required' option is 'false'. Pressing one of these keys
+      // will add the current input value to the list. Also used to split the
+      // initial input value for items (using the first character if multiple
+      // are configured).
       separator: ',',
       // One or more initial values (string or JSON) to add to the list.
       values: null,
@@ -325,8 +326,8 @@
         })
         .bind('keypress.manifest', function (key) {
           // If arbitrary values are allowed, add the current input value if
-          // the separator key is pressed.
-          if (!options.required && key.which === options.separator.charCodeAt()) {
+          // a separator key is pressed.
+          if (!options.required && self._isSeparator(key.which)) {
             // Prevent the separator key character from being added to the
             // input value.
             key.preventDefault();
@@ -541,7 +542,7 @@
       }
       // If not, split the current input value with the 'separator'.
       else if (value) {
-        values = value.split(self.options.separator);
+        values = value.split(self._separator());
         values = $.map(values, $.trim);
       }
 
@@ -600,7 +601,7 @@
     // the input to its original state.
     destroy: function () {
       var self = this,
-          valuesString = self.values().join(self.options.separator + ' ');
+          valuesString = self.values().join(self._separator() + ' ');
 
       // Destroy Marco Polo.
       if (self.options.marcoPolo) {
@@ -708,6 +709,34 @@
       self._resizeInput();
 
       return self;
+    },
+
+    // Whether the specified key code is a configured value separator.
+    _isSeparator: function (key) {
+      var separator = this.options.separator;
+
+      if ($.isArray(separator)) {
+        // Convert the key code to the actual character, then compare. It's
+        // done this way because 'separator' is an array of characters.
+        return $.inArray(String.fromCharCode(key), separator) !== -1;
+      }
+      else {
+        // Convert the separator character to the key code, then compare.
+        return key === separator.charCodeAt();
+      }
+    },
+
+    // Get the primary value separator. If an array of separators is
+    // configured, the first one is considered the primary.
+    _separator: function () {
+      var separator = this.options.separator;
+
+      if ($.isArray(separator)) {
+        return separator[0];
+      }
+      else {
+        return separator;
+      }
     },
 
     // Get the currently highlighted item.
