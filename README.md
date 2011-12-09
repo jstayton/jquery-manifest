@@ -29,8 +29,8 @@ Features
 *   **Autocomplete functionality.**
     [Marco Polo](https://github.com/jstayton/jquery-marcopolo) is built-in to
     provide autocomplete functionality if needed. And it's from the same
-    developer as Manifest (_why am I talking in the third person?_), so you can
-    trust in the quality of the code and integration.
+    developer as Manifest, so you can trust in the quality of the code and
+    integration.
 *   **Arbitrary values.** Limit selection strictly to the autocomplete results,
     or allow arbitrary values not returned through autocomplete. Either way,
     it's a simple configuration option.
@@ -53,15 +53,16 @@ What About Chosen?
 [Chosen](https://github.com/harvesthq/chosen) is a great plugin for jQuery and
 Prototype that, while similar to Manifest, is different in a number of ways:
 
-*   Chosen works with a _select_ element; Manifest works with a _text input_.
-*   Chosen searches the pre-defined _option_ elements; Manifest has built-in
+*   Chosen works with a `<select>` element; Manifest works with a text
+    `<input>`.
+*   Chosen searches the pre-defined `<option>` elements; Manifest has built-in
     autocomplete functionality that requests results from a URL.
-*   Chosen doesn't allow arbitrary, non-_option_ values to be selected;
+*   Chosen doesn't allow arbitrary, non-`<option>` values to be selected;
     Manifest does, with or without autocomplete enabled.
 
 Chosen and Manifest were designed for different cases. If you want to make a
-_select_ element with a lot of _options_ more user-friendly, use Chosen. If you
-can't reasonably list out every possible _option_ (like all users in a system),
+`<select>` element with a lot of options more user-friendly, use Chosen. If you
+can't reasonably list out every possible option (like all users in a system),
 or you need to allow arbitrary values (like new tags), use Manifest.
 
 Requirements
@@ -77,12 +78,12 @@ Getting Started
 
 To start, make sure to include both jQuery and Manifest in your HTML:
 
-    <script type="text/javascript" src="jquery.min.js"></script>
-    <script type="text/javascript" src="jquery.manifest.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="jquery.manifest.min.js"></script>
 
 Next, add a text input, if you haven't already:
 
-    <input type="text" id="recipients" name="recipients" />
+    <input type="text" id="recipients" name="recipients">
 
 Then attach Manifest to the text input in your JavaScript:
 
@@ -95,20 +96,20 @@ Then attach Manifest to the text input in your JavaScript:
       }
     });
 
-Notice the _marcoPolo_ option object.
+Notice the `marcoPolo` option object.
 [Marco Polo](https://github.com/jstayton/jquery-marcopolo) powers the
 autocomplete functionality within Manifest, and the option object allows any of
 Marco Polo's options to be configured through Manifest. Be sure to read through
 Marco Polo's documentation for how it works and what's possible, including
-details on returning results in JSON format from your data source _url_. If you
-don't require autocomplete functionality, simply set the _marcoPolo_ option to
-_false_.
+details on returning results in JSON format from your data source `url`. If you
+don't require autocomplete functionality, simply set the `marcoPolo` option to
+`false`.
 
 Once you have autocomplete results working through Marco Polo, select a few of
 those results for submission. Manifest stores each item value in an array named
 after the text input. In the case of this example, the input's name is
-_recipients_, so the array of values is named _recipients\_values_. If you dump
-the values of this array in PHP (_$\_POST['recipients\_values']_), the results
+`recipients`, so the array of values is named `recipients_values`. If you dump
+the values of this array in PHP (`$_POST['recipients_values']`), the results
 will look something like this:
 
     Array
@@ -121,8 +122,8 @@ will look something like this:
 Loop through the array and process each value as necessary.
 
 You should now have enough understanding of Manifest to start configuring it
-for your specific needs. And when you're ready, considering reading through
-some of the more advanced guides:
+for your specific needs. And when you're ready, consider reading through some
+of the more advanced guides:
 
 *   [CSS Starter Template](https://github.com/jstayton/jquery-manifest/wiki/CSS-Starter-Template)
 *   [HTML Breakdown](https://github.com/jstayton/jquery-manifest/wiki/HTML-Breakdown)
@@ -250,7 +251,7 @@ Options
 
         <li class="mf_item">
           …
-          <input type="hidden" class="mf_value" value="lweir65@gmail.com" />
+          <input type="hidden" class="mf_value" value="lweir65@gmail.com">
         </li>
 
     _Default:_
