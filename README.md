@@ -10,7 +10,7 @@ to precisely select just the right amount of text, making sure not to
 accidentally remove too much or too little. As a discerning developer, you know
 the user experience should be better. And it can be, with Manifest.
 
-Developed by [Justin Stayton](http://twitter.com/jstayton) at
+Developed by [Justin Stayton](http://twitter.com/jstayton) while at
 [Monk Development](http://monkdev.com).
 
 *   [Examples](http://jstayton.github.com/jquery-manifest)
