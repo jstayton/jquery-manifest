@@ -137,7 +137,8 @@
     // Initialize the plugin on an input.
     _create: function () {
       var self = this,
-          options = self.options;
+          options = self.options,
+          originalValue;
 
       // Create a more appropriately named alias for the input.
       self.$input = self.element.addClass('mf_input');
@@ -159,7 +160,18 @@
       self.originalWidth = self.$input.css('width');
 
       if (options.marcoPolo) {
+        // To prevent Marco Polo from parsing the input's value — because we
+        // want this plugin to parse the value instead — the value is
+        // temporarily set to nothing while Marco Polo is bound to the input.
+        originalValue = self.$input.val();
+
+        self.$input.val('');
+
         self._bindMarcoPolo();
+
+        // Now that Marco Polo is bound, the value is added back so that it can
+        // be parsed by this plugin for values to add.
+        self.$input.val(originalValue);
       }
 
       self
@@ -700,7 +712,7 @@
 
       // If Marco Polo is enabled, use its method to change the input value.
       if (self.options.marcoPolo) {
-        $input.marcoPolo('change', '');
+        $input.marcoPolo('change', null);
       }
       else {
         $input.val('');
