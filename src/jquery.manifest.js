@@ -9,7 +9,16 @@
  * Released under the MIT License
  * http://en.wikipedia.org/wiki/MIT_License
  */
-(function ($, undefined) {
+(function (factory) {
+  // Register as an AMD module, compatible with script loaders like RequireJS.
+  // Source: https://github.com/umdjs/umd/blob/master/jqueryPlugin.js
+  if (typeof define === 'function' && define.amd) {
+    define(['jquery'], factory);
+  }
+  else {
+    factory(jQuery);
+  }
+}(function ($, undefined) {
   'use strict';
 
   // jQuery UI's Widget Factory provides an object-oriented plugin framework
@@ -901,4 +910,4 @@
       return callback && callback.apply(self.element, args);
     }
   });
-})(jQuery);
+}));
