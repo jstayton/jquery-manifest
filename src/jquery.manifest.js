@@ -487,7 +487,7 @@
           $value = $(),
           add = true;
 
-      for (var i = 0; i < values.length; i++) {
+      for (var i = 0, length = values.length; i < length; i++) {
         value = values[i];
 
         // Trim extra spaces, tabs, and newlines from the beginning and end of
