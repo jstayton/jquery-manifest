@@ -504,16 +504,6 @@
         $item = $('<li class="mf_item" />');
         $remove = $('<a href="#" class="mf_remove" title="Remove" />');
         $value = $('<input type="hidden" class="mf_value" />');
-
-        // Store the data with the item for easy access.
-        $item.data('manifest', value);
-
-        // Format the HTML display of the item.
-        $item.html(options.formatDisplay.call($input, value, $item, $mpItem));
-
-        // Format the HTML display of the remove link.
-        $remove.html(options.formatRemove.call($input, $remove, $item));
-
         if (options.valuesName) {
           $value.attr('name', options.valuesName + '[]');
         }
@@ -523,24 +513,42 @@
           $value.attr('name', $input.attr('name') + '_values[]');
         }
 
-        // Format the hidden value to be submitted for the item.
-        $value.val(options.formatValue.call($input, value, $value, $item, $mpItem));
+        // Store the data with the item for easy access.
+        $item.data('manifest', value);
 
-        // Append the remove link and hidden values after the display elements of
-        // the item.
-        $item.append($remove, $value);
+        // When all the formatting is finished
+        $.when(options.formatDisplay.call($input, value, $item, $mpItem),
+               options.formatRemove.call($input, $remove, $item),
+               options.formatValue.call($input, value, $value, $item, $mpItem))
+         .then(function(display, remove, val){
 
-        add = self._trigger('add', [value, $item]);
+            // Format the HTML display of the item.
+            $item.html(display);
 
-        if (add !== false) {
-          $item.appendTo(self.$list);
+            // Format the HTML display of the remove icon.
+            $remove.html(remove);
 
-          // Sometimes an 'onChange' event shouldn't be fired, like when
-          // initial values are added.
-          if (triggerChange || triggerChange === undefined) {
-            self._trigger('change', ['add', value, $item]);
+            // Format the hidden value to be submitted for the item.
+            $value.val(val);
+
+            // Append the remove link and hidden values after the display elements of
+            // the item.
+            $item.append($remove, $value);
+        });
+
+        $.when(self._trigger('add', [value, $item])).then(function(result){
+          add = result;
+          if (add !== false) {
+            $item.appendTo(self.$list);
+
+            // Sometimes an 'onChange' event shouldn't be fired, like when
+            // initial values are added.
+            if (triggerChange || triggerChange === undefined) {
+              self._trigger('change', ['add', value, $item]);
+            }
           }
-        }
+        });
+
       }
 
       if (clearInputValue) {
