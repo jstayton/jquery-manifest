@@ -68,7 +68,7 @@ or you need to allow arbitrary values (like new tags), use Manifest.
 Requirements
 ------------
 
-*   jQuery 1.4.2 or newer.
+*   jQuery 1.5 or newer.
 *   jQuery UI Widget 1.8.14. Included in the minified version.
 *   Marco Polo 1.5.0. Included in the minified version.
 *   All modern browsers are supported, as well as IE 6 and newer.
