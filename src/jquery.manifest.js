@@ -70,6 +70,8 @@
       onSelect: null,
       // Called when an item is no longer selected.
       onSelectRemove: null,
+      // Called when any of the formatting methods are rejected
+      onFormattingRejected : function() {},
       // Whether to only allow items to be selected from the results list. If
       // 'false', arbitrary, non-results-list values can be added when the
       // 'separator' key character is pressed or the input is blurred.
@@ -534,7 +536,7 @@
             // Append the remove link and hidden values after the display elements of
             // the item.
             $item.append($remove, $value);
-        });
+        },options.onFormattingRejected);
 
         $.when(self._trigger('add', [value, $item])).then(function(result){
           add = result;
