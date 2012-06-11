@@ -4,29 +4,30 @@
     <title>Manifest &mdash; Example 2</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="js/jquery.ui.widget.min.js"></script>
     <script src="js/jquery.marcopolo.min.js"></script>
     <script src="js/jquery.manifest.js"></script>
     <script>
       $(function () {
-        $('#twitterUserSearch').manifest({
+        $('#locations').manifest({
           formatDisplay: function (data, $item, $mpItem) {
-            return data.screen_name;
+            return data.full_name;
           },
           formatValue: function (data, $value, $item, $mpItem) {
-            return data.user_id;
+            return data.id;
           },
           marcoPolo: {
             data: {
-              apikey: 'api_test-W1cipwpcdu9Cbd9pmm8D4Cjc469'
+              max_results: '20'
             },
             formatData: function (data) {
-              return data.results.slice(0, 20);
+              return data.result.places;
             },
             formatItem: function (data, $item) {
-              return data.screen_name;
-            }
+              return data.full_name;
+            },
+            param: 'query'
           },
           required: true
         });
@@ -37,8 +38,8 @@
     <div id="container">
       <h1>Manifest</h1>
       <h2>Try it Out</h2>
-      <form action="http://api.infochimps.com/social/network/tw/search/people_search" method="get">
-        <input type="text" name="twitterUserSearch" id="twitterUserSearch">
+      <form action="https://api.twitter.com/1/geo/search.json?callback=?" method="get">
+        <input type="text" name="locations" id="locations">
       </form>
       <h2>How it Works</h2>
       <script src="https://gist.github.com/1195415.js"></script>
