@@ -484,8 +484,7 @@
           value,
           $item = $(),
           $remove = $(),
-          $value = $(),
-          add = true;
+          $value = $();
 
       for (var i = 0, length = values.length; i < length; i++) {
         value = values[i];
@@ -505,15 +504,6 @@
         $remove = $('<a href="#" class="mf_remove" title="Remove" />');
         $value = $('<input type="hidden" class="mf_value" />');
 
-        // Store the data with the item for easy access.
-        $item.data('manifest', value);
-
-        // Format the HTML display of the item.
-        $item.html(options.formatDisplay.call($input, value, $item, $mpItem));
-
-        // Format the HTML display of the remove link.
-        $remove.html(options.formatRemove.call($input, $remove, $item));
-
         if (options.valuesName) {
           $value.attr('name', options.valuesName + '[]');
         }
@@ -523,24 +513,41 @@
           $value.attr('name', $input.attr('name') + '_values[]');
         }
 
-        // Format the hidden value to be submitted for the item.
-        $value.val(options.formatValue.call($input, value, $value, $item, $mpItem));
+        // Store the data with the item for easy access.
+        $item.data('manifest', value);
 
-        // Append the remove link and hidden values after the display elements of
-        // the item.
-        $item.append($remove, $value);
+        // Formatting callbacks support deferred responses to allow for ajax
+        // and other asynchronous requests.
+        $.when(options.formatDisplay.call($input, value, $item, $mpItem),
+               options.formatRemove.call($input, $remove, $item),
+               options.formatValue.call($input, value, $value, $item, $mpItem))
+         .then(function(formatDisplay, formatRemove, formatValue) {
+           // Format the HTML display of the item.
+           $item.html(formatDisplay);
 
-        add = self._trigger('add', [value, $item]);
+           // Format the HTML display of the remove icon.
+           $remove.html(formatRemove);
 
-        if (add !== false) {
-          $item.appendTo(self.$list);
+           // Format the hidden value to be submitted for the item.
+           $value.val(formatValue);
 
-          // Sometimes an 'onChange' event shouldn't be fired, like when
-          // initial values are added.
-          if (triggerChange || triggerChange === undefined) {
-            self._trigger('change', ['add', value, $item]);
-          }
-        }
+           // Append the remove link and hidden values after the display
+           // elements of the item.
+           $item.append($remove, $value);
+
+           $.when(self._trigger('add', [value, $item]))
+            .then(function (add) {
+              if (add !== false) {
+                $item.appendTo(self.$list);
+
+                // Sometimes an 'onChange' event shouldn't be fired, like when
+                // initial values are added.
+                if (triggerChange || triggerChange === undefined) {
+                  self._trigger('change', ['add', value, $item]);
+                }
+              }
+            });
+         });
       }
 
       if (clearInputValue) {
@@ -592,16 +599,16 @@
 
       $items.each(function () {
         var $item = $(this),
-            data = $item.data('manifest'),
-            remove = true;
+            data = $item.data('manifest');
 
-        remove = self._trigger('remove', [data, $item]);
+        $.when(self._trigger('remove', [data, $item]))
+         .then(function (remove) {
+           if (remove !== false) {
+             $item.remove();
 
-        if (remove !== false) {
-          $item.remove();
-
-          self._trigger('change', ['remove', data, $item]);
-        }
+             self._trigger('change', ['remove', data, $item]);
+           }
+         });
       });
     },
 
