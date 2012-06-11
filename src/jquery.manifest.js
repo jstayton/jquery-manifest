@@ -70,8 +70,6 @@
       onSelect: null,
       // Called when an item is no longer selected.
       onSelectRemove: null,
-      // Called when any of the formatting methods are rejected
-      onFormattingRejected : function() {},
       // Whether to only allow items to be selected from the results list. If
       // 'false', arbitrary, non-results-list values can be added when the
       // 'separator' key character is pressed or the input is blurred.
@@ -486,8 +484,7 @@
           value,
           $item = $(),
           $remove = $(),
-          $value = $(),
-          add = true;
+          $value = $();
 
       for (var i = 0, length = values.length; i < length; i++) {
         value = values[i];
@@ -506,6 +503,7 @@
         $item = $('<li class="mf_item" />');
         $remove = $('<a href="#" class="mf_remove" title="Remove" />');
         $value = $('<input type="hidden" class="mf_value" />');
+
         if (options.valuesName) {
           $value.attr('name', options.valuesName + '[]');
         }
@@ -518,39 +516,38 @@
         // Store the data with the item for easy access.
         $item.data('manifest', value);
 
-        // When all the formatting is finished
+        // Formatting callbacks support deferred responses to allow for ajax
+        // and other asynchronous requests.
         $.when(options.formatDisplay.call($input, value, $item, $mpItem),
                options.formatRemove.call($input, $remove, $item),
                options.formatValue.call($input, value, $value, $item, $mpItem))
-         .then(function(display, remove, val){
+         .then(function(formatDisplay, formatRemove, formatValue) {
+           // Format the HTML display of the item.
+           $item.html(formatDisplay);
 
-            // Format the HTML display of the item.
-            $item.html(display);
+           // Format the HTML display of the remove icon.
+           $remove.html(formatRemove);
 
-            // Format the HTML display of the remove icon.
-            $remove.html(remove);
+           // Format the hidden value to be submitted for the item.
+           $value.val(formatValue);
 
-            // Format the hidden value to be submitted for the item.
-            $value.val(val);
+           // Append the remove link and hidden values after the display
+           // elements of the item.
+           $item.append($remove, $value);
 
-            // Append the remove link and hidden values after the display elements of
-            // the item.
-            $item.append($remove, $value);
-        },options.onFormattingRejected);
+           $.when(self._trigger('add', [value, $item]))
+            .then(function (add) {
+              if (add !== false) {
+                $item.appendTo(self.$list);
 
-        $.when(self._trigger('add', [value, $item])).then(function(result){
-          add = result;
-          if (add !== false) {
-            $item.appendTo(self.$list);
-
-            // Sometimes an 'onChange' event shouldn't be fired, like when
-            // initial values are added.
-            if (triggerChange || triggerChange === undefined) {
-              self._trigger('change', ['add', value, $item]);
-            }
-          }
-        });
-
+                // Sometimes an 'onChange' event shouldn't be fired, like when
+                // initial values are added.
+                if (triggerChange || triggerChange === undefined) {
+                  self._trigger('change', ['add', value, $item]);
+                }
+              }
+            });
+         });
       }
 
       if (clearInputValue) {
@@ -602,16 +599,16 @@
 
       $items.each(function () {
         var $item = $(this),
-            data = $item.data('manifest'),
-            remove = true;
+            data = $item.data('manifest');
 
-        remove = self._trigger('remove', [data, $item]);
+        $.when(self._trigger('remove', [data, $item]))
+         .then(function (remove) {
+           if (remove !== false) {
+             $item.remove();
 
-        if (remove !== false) {
-          $item.remove();
-
-          self._trigger('change', ['remove', data, $item]);
-        }
+             self._trigger('change', ['remove', data, $item]);
+           }
+         });
       });
     },
 
