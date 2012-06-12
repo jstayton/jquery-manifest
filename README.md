@@ -128,6 +128,7 @@ of the more advanced guides:
 *   [CSS Starter Template](https://github.com/jstayton/jquery-manifest/wiki/CSS-Starter-Template)
 *   [HTML Breakdown](https://github.com/jstayton/jquery-manifest/wiki/HTML-Breakdown)
 *   [Adding Initial Values](https://github.com/jstayton/jquery-manifest/wiki/Adding-Initial-Values)
+*   [Showing a Busy Indicator](https://github.com/jstayton/jquery-manifest/wiki/Showing-a-Busy-Indicator)
 
 Feedback
 --------
