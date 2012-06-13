@@ -70,7 +70,7 @@ Requirements
 
 *   jQuery 1.5 or newer.
 *   jQuery UI Widget 1.8.14. Included in the minified version.
-*   Marco Polo 1.5.0. Included in the minified version.
+*   Marco Polo 1.5.1. Included in the minified version.
 *   All modern browsers are supported, as well as IE 6 and newer.
 
 Getting Started
@@ -216,7 +216,9 @@ Options
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Return:_ _string_, _DOM element_, or _jQuery object_ to use as the
-              display.
+              display. A [Deferred object](http://api.jquery.com/category/deferred-object/)
+              can also be returned if an asynchronous process needs to be run
+              that resolves with one of these types later.
 
     ---------------------------------------------------------------------------
 *   **formatRemove** ($remove, $item) _function_
@@ -242,7 +244,9 @@ Options
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Return:_ _string_, _DOM element_, or _jQuery object_ to use as the
-              display.
+              display. A [Deferred object](http://api.jquery.com/category/deferred-object/)
+              can also be returned if an asynchronous process needs to be run
+              that resolves with one of these types later.
 
     ---------------------------------------------------------------------------
 *   **formatValue** (data, $value, $item, $mpItem) _function_
@@ -274,14 +278,19 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Return:_ _string_ value.
+    _Return:_ _string_ value. A [Deferred object](http://api.jquery.com/category/deferred-object/)
+              can also be returned if an asynchronous process needs to be run
+              that resolves with a _string_ value later.
 
 #### Events
 
 *   **onAdd** (data, $item) _function, null_
 
     Called when an item is added to the list. Return _false_ to prevent the
-    item from being added.
+    item from being added, or a
+    [Deferred object](http://api.jquery.com/category/deferred-object/) if an
+    asynchronous process needs to be run that resolves with a _boolean_ value
+    later.
 
     _Default:_ null
 
