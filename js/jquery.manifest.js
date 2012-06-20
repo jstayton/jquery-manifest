@@ -325,15 +325,17 @@
     _bindInput: function () {
       var self = this,
           $input = self.$input,
-          options = self.options;
+          options = self.options,
+          preventMarcoPoloCollision = options.marcoPolo && options.marcoPolo.minChars === 0,
+          collisionKeys = [
+            self.keys.UP,
+            self.keys.DOWN,
+            self.keys.HOME,
+            self.keys.END
+          ];
 
       $input
         .bind('keydown.manifest', function (key) {
-          // Keyboard navigation collision occurs with Marco Polo when it's
-          // configured to do a search when the input has no characters. The
-          // results list is then navigable at the same time as Manifest.
-          var preventMarcoPoloCollision = options.marcoPolo && options.marcoPolo.minChars === 0;
-
           self._resizeInput();
 
           // Prevent the form from submitting on enter.
@@ -343,6 +345,13 @@
 
           // Keyboard navigation only works without an input value.
           if ($input.val()) {
+            return;
+          }
+
+          // Keyboard navigation collision occurs with Marco Polo when it's
+          // configured to do a search when the input has no characters. The
+          // results list is then navigable at the same time as Manifest.
+          if (preventMarcoPoloCollision && $.inArray(key.which, collisionKeys) !== -1) {
             return;
           }
 
@@ -362,47 +371,27 @@
               break;
 
             // Select the previous item.
-            case self.keys.UP:
-              if (preventMarcoPoloCollision) {
-                break;
-              }
-
-              // Notice there's no break here. Execution continues through.
-
             case self.keys.LEFT:
+            case self.keys.UP:
               self._selectPrev();
 
               break;
 
             // Select the next item.
-            case self.keys.DOWN:
-              if (preventMarcoPoloCollision) {
-                break;
-              }
-
-              // Notice there's no break here. Execution continues through.
-
             case self.keys.RIGHT:
+            case self.keys.DOWN:
               self._selectNext();
 
               break;
 
             // Select the first item.
             case self.keys.HOME:
-              if (preventMarcoPoloCollision) {
-                break;
-              }
-
               self._selectFirst();
 
               break;
 
             // Select the last item.
             case self.keys.END:
-              if (preventMarcoPoloCollision) {
-                break;
-              }
-
               self._selectLast();
 
               break;
@@ -559,7 +548,35 @@
           value,
           $item = $(),
           $remove = $(),
-          $value = $();
+          $value = $(),
+          // Called when deferred formatting callbacks complete.
+          buildItem = function(formatDisplay, formatRemove, formatValue) {
+            // Format the HTML display of the item.
+            $item.html(formatDisplay);
+
+            // Format the HTML display of the remove icon.
+            $remove.html(formatRemove);
+
+            // Format the hidden value to be submitted for the item.
+            $value.val(formatValue);
+
+            // Append the remove link and hidden values after the display
+            // elements of the item.
+            $item.append($remove, $value);
+
+            $.when(self._trigger('add', [value, $item]))
+             .then(function (add) {
+               if (add !== false) {
+                 $item.appendTo(self.$list);
+
+                 // Sometimes an 'onChange' event shouldn't be fired, like when
+                 // initial values are added.
+                 if (triggerChange || triggerChange === undefined) {
+                   self._trigger('change', ['add', value, $item]);
+                 }
+               }
+             });
+          };
 
       for (var i = 0, length = values.length; i < length; i++) {
         value = values[i];
@@ -596,33 +613,7 @@
         $.when(options.formatDisplay.call($input, value, $item, $mpItem),
                options.formatRemove.call($input, $remove, $item),
                options.formatValue.call($input, value, $value, $item, $mpItem))
-         .then(function(formatDisplay, formatRemove, formatValue) {
-           // Format the HTML display of the item.
-           $item.html(formatDisplay);
-
-           // Format the HTML display of the remove icon.
-           $remove.html(formatRemove);
-
-           // Format the hidden value to be submitted for the item.
-           $value.val(formatValue);
-
-           // Append the remove link and hidden values after the display
-           // elements of the item.
-           $item.append($remove, $value);
-
-           $.when(self._trigger('add', [value, $item]))
-            .then(function (add) {
-              if (add !== false) {
-                $item.appendTo(self.$list);
-
-                // Sometimes an 'onChange' event shouldn't be fired, like when
-                // initial values are added.
-                if (triggerChange || triggerChange === undefined) {
-                  self._trigger('change', ['add', value, $item]);
-                }
-              }
-            });
-         });
+         .then(buildItem);
       }
 
       if (clearInputValue) {
