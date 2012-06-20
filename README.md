@@ -46,6 +46,8 @@ Features
     This manifests itself not only in clear and thorough developer
     documentation (below), but also verbose documentation within the code
     itself.
+*   **WAI-ARIA support.** Assistive technology users can fully understand and
+    navigate Manifest.
 
 What About Chosen?
 ------------------

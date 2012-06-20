@@ -138,25 +138,41 @@
     keys: {
       BACKSPACE: 8,
       DELETE: 46,
+      DOWN: 40,
+      END: 35,
       ENTER: 13,
+      HOME: 36,
       LEFT: 37,
-      RIGHT: 39
+      RIGHT: 39,
+      UP: 38
     },
 
     // Initialize the plugin on an input.
     _create: function () {
       var self = this,
           options = self.options,
-          originalValue;
+          originalValue,
+          $input;
 
       // Create a more appropriately named alias for the input.
-      self.$input = self.element.addClass('mf_input');
+      self.$input = $input = self.element.addClass('mf_input');
+
+      // The existing input name or a created one. Used for building the ID of
+      // other elements.
+      self.inputName = 'mf_' + ($input.attr('name') || $.now());
 
       // Create a container to wrap together the input, list, and measure.
       self.$container = $('<div class="mf_container" />');
 
       // Create an empty list that items will be added to.
-      self.$list = $('<ol class="mf_list" />');
+      self.$list = $('<ol class="mf_list" />')
+                     .attr({
+                      'aria-atomic': 'false',
+                      'aria-live': 'polite',
+                      'aria-multiselectable': 'true',
+                      'id': self.inputName + '_list',
+                      'role': 'listbox'
+                     });
 
       self.$measure = $('<span class="mf_measure" />');
 
@@ -165,22 +181,36 @@
       self.mousedown = false;
       self.mpMousedown = false;
 
-      // Make note of the original input width in case 'destroy' is called.
-      self.originalWidth = self.$input.css('width');
+      // Remember original input attribute values for when 'destroy' is called
+      // and the input is returned to its original state.
+      self.inputOriginals = {
+        'aria-owns': $input.attr('aria-owns'),
+        'role': $input.attr('role'),
+        'width': $input.css('width')
+      };
 
       if (options.marcoPolo) {
         // To prevent Marco Polo from parsing the input's value — because we
         // want this plugin to parse the value instead — the value is
         // temporarily set to nothing while Marco Polo is bound to the input.
-        originalValue = self.$input.val();
+        originalValue = $input.val();
 
-        self.$input.val('');
+        $input.val('');
 
         self._bindMarcoPolo();
 
+        // Append the Manifest list ID after the Marco Polo list ID for ARIA.
+        $input.attr('aria-owns', $input.attr('aria-owns') + ' ' + self.$list.attr('id'));
+
         // Now that Marco Polo is bound, the value is added back so that it can
         // be parsed by this plugin for values to add.
-        self.$input.val(originalValue);
+        $input.val(originalValue);
+      }
+      else {
+        $input.attr({
+          'aria-owns': self.$list.attr('id'),
+          'role': 'combobox'
+        });
       }
 
       self
@@ -190,14 +220,14 @@
         ._bindDocument();
 
       // Add the list and measure, and wrap them all in the container.
-      self.$input
+      $input
         .wrap(self.$container)
         .before(self.$list)
         .after(self.$measure);
 
       // Because .wrap() only makes a copy of the wrapper, get the actual
       // container that was inserted into the DOM.
-      self.$container = self.$input.parent();
+      self.$container = $input.parent();
 
       // Add any initial values to the list.
       if (options.values) {
@@ -299,6 +329,11 @@
 
       $input
         .bind('keydown.manifest', function (key) {
+          // Keyboard navigation collision occurs with Marco Polo when it's
+          // configured to do a search when the input has no characters. The
+          // results list is then navigable at the same time as Manifest.
+          var preventMarcoPoloCollision = options.marcoPolo && options.marcoPolo.minChars === 0;
+
           self._resizeInput();
 
           // Prevent the form from submitting on enter.
@@ -327,14 +362,48 @@
               break;
 
             // Select the previous item.
+            case self.keys.UP:
+              if (preventMarcoPoloCollision) {
+                break;
+              }
+
+              // Notice there's no break here. Execution continues through.
+
             case self.keys.LEFT:
               self._selectPrev();
 
               break;
 
             // Select the next item.
+            case self.keys.DOWN:
+              if (preventMarcoPoloCollision) {
+                break;
+              }
+
+              // Notice there's no break here. Execution continues through.
+
             case self.keys.RIGHT:
               self._selectNext();
+
+              break;
+
+            // Select the first item.
+            case self.keys.HOME:
+              if (preventMarcoPoloCollision) {
+                break;
+              }
+
+              self._selectFirst();
+
+              break;
+
+            // Select the last item.
+            case self.keys.END:
+              if (preventMarcoPoloCollision) {
+                break;
+              }
+
+              self._selectLast();
 
               break;
 
@@ -406,13 +475,19 @@
           // nothing is left selected if this 'mousedown' ends elsewhere.
           self.mousedown = true;
         })
-        .delegate('li', 'click', function () {
-          self._toggleSelect($(this));
-        })
-        .delegate('a.mf_remove', 'click', function (event) {
-          self.remove($(this).closest('li'));
+        .delegate('li', 'click', function (event) {
+          // Remove the item if the remove link is clicked.
+          if ($(event.target).is('a.mf_remove')) {
+            self._removeSelected();
 
-          event.preventDefault();
+            self.remove($(this));
+
+            event.preventDefault();
+          }
+          // Otherwise, toggle the selected state.
+          else {
+            self._toggleSelect($(this));
+          }
         });
 
       return self;
@@ -500,7 +575,7 @@
           continue;
         }
 
-        $item = $('<li class="mf_item" />');
+        $item = $('<li class="mf_item" role="option" aria-selected="false" />');
         $remove = $('<a href="#" class="mf_remove" title="Remove" />');
         $value = $('<input type="hidden" class="mf_value" />');
 
@@ -604,6 +679,10 @@
         $.when(self._trigger('remove', [data, $item]))
          .then(function (remove) {
            if (remove !== false) {
+             if (self._isSelected($item)) {
+               self._removeSelect($item);
+             }
+
              $item.remove();
 
              self._trigger('change', ['remove', data, $item]);
@@ -629,22 +708,31 @@
     // the input to its original state.
     destroy: function () {
       var self = this,
+          $input = self.$input,
           valuesString = self.values().join(self._separator() + ' ');
 
       // Destroy Marco Polo.
       if (self.options.marcoPolo) {
-        self.$input.marcoPolo('destroy');
+        $input.marcoPolo('destroy');
       }
 
       self.$list.remove();
       self.$measure.remove();
-      self.$input
+      $input
         .unwrap()
         .removeClass('mf_input')
-        // Set the input back to its original width.
-        .width(self.originalWidth)
         // Join the added item values together and set as the input value.
         .val(valuesString);
+
+      // Reset the input to its original attribute values.
+      $.each(self.inputOriginals, function (attribute, value) {
+        if (value === undefined) {
+          $input.removeAttr(attribute);
+        }
+        else {
+          $input.attr(attribute, value);
+        }
+      });
 
       $(document).unbind('.manifest');
 
@@ -659,19 +747,19 @@
           $input = self.$input;
 
       self.$measure.css({
-        fontFamily: $input.css('font-family'),
-        fontSize: $input.css('font-size'),
-        fontStyle: $input.css('font-style'),
-        fontVariant: $input.css('font-variant'),
-        fontWeight: $input.css('font-weight'),
-        left: -9999,
-        letterSpacing: $input.css('letter-spacing'),
-        position: 'absolute',
-        textTransform: $input.css('text-transform'),
-        top: -9999,
-        whiteSpace: 'nowrap',
-        width: 'auto',
-        wordSpacing: $input.css('word-spacing')
+        'font-family': $input.css('font-family'),
+        'font-size': $input.css('font-size'),
+        'font-style': $input.css('font-style'),
+        'font-variant': $input.css('font-variant'),
+        'font-weight': $input.css('font-weight'),
+        'left': -9999,
+        'letter-spacing': $input.css('letter-spacing'),
+        'position': 'absolute',
+        'text-transform': $input.css('text-transform'),
+        'top': -9999,
+        'white-space': 'nowrap',
+        'width': 'auto',
+        'word-spacing': $input.css('word-spacing')
       });
 
       return self;
@@ -767,6 +855,16 @@
       }
     },
 
+    // Get the first item.
+    _firstItem: function () {
+      return this.$list.children('li:first');
+    },
+
+    // Get the last item.
+    _lastItem: function () {
+      return this.$list.children('li:last');
+    },
+
     // Get the currently highlighted item.
     _highlighted: function () {
       return this.$list.children('li.mf_highlighted');
@@ -816,6 +914,11 @@
       return this.$list.children('li.mf_selected');
     },
 
+    // Whether the specified item is currently selected.
+    _isSelected: function ($item) {
+      return $item.hasClass('mf_selected');
+    },
+
     // Add the selected state to the specified item.
     _addSelect: function ($item) {
       var self = this;
@@ -828,7 +931,14 @@
       // selected at a time.
       self._removeSelected();
 
-      $item.addClass('mf_selected');
+      $item
+        .addClass('mf_selected')
+        .attr({
+          'aria-selected': 'true',
+          'id': self.inputName + '_selected'
+        });
+
+      self.$list.attr('aria-activedescendant', $item.attr('id'));
 
       self._trigger('select', [$item.data('marcoPolo'), $item]);
 
@@ -843,7 +953,12 @@
         return self;
       }
 
-      $item.removeClass('mf_selected');
+      $item
+        .removeClass('mf_selected')
+        .attr('aria-selected', 'false')
+        .removeAttr('id');
+
+      self.$list.removeAttr('aria-activedescendant');
 
       self._trigger('selectRemove', [$item.data('marcoPolo'), $item]);
 
@@ -857,7 +972,7 @@
 
     // Toggle the selection of the specified item.
     _toggleSelect: function ($item) {
-      if ($item.hasClass('mf_selected')) {
+      if (this._isSelected($item)) {
         return this._removeSelect($item);
       }
       else {
@@ -877,7 +992,7 @@
       }
       // Select the last item added to the list if not.
       else {
-        $prev = self.$list.children(':last');
+        $prev = self._lastItem();
       }
 
       // Only change the current selection if there's a previous item. If the
@@ -903,6 +1018,16 @@
       else {
         return self._removeSelect($selected);
       }
+    },
+
+    // Select the first item.
+    _selectFirst: function () {
+      return this._addSelect(this._firstItem());
+    },
+
+    // Select the last item.
+    _selectLast: function () {
+      return this._addSelect(this._lastItem());
     },
 
     // Trigger a callback subscribed to via an option or using .bind().
