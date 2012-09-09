@@ -292,7 +292,8 @@ Options
     item from being added, or a
     [Deferred object](http://api.jquery.com/category/deferred-object/) if an
     asynchronous process needs to be run that resolves with a _boolean_ value
-    later.
+    later. If Marco Polo is in use, returning _false_ in `onSelect` will
+    prevent this event from even being fired.
 
     _Default:_ null
 
@@ -322,7 +323,7 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Bind:_ You can also bind to the _manifestadd_ event:
+    _Bind:_ You can also bind to the _manifestchange_ event:
 
         $(selector).bind('manifestchange', function (event, type, data, $item) { … });
 

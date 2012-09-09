@@ -122,13 +122,18 @@
           }
         },
         onSelect: function (mpData, $mpItem) {
+          var add = true;
+
           // Allow for custom callback.
           if (options.marcoPolo.onSelect) {
-            options.marcoPolo.onSelect.call(this, mpData, $mpItem);
+            add = options.marcoPolo.onSelect.call(this, mpData, $mpItem);
           }
 
-          // Add the selected Marco Polo item to the Manifest list.
-          self.add(mpData, $mpItem, true, true);
+          // Add the selected Marco Polo item to the Manifest list unless
+          // 'onSelect' explicitly returns 'false'.
+          if (add !== false) {
+            self.add(mpData, $mpItem, true, true);
+          }
         },
         required: options.required
       };
