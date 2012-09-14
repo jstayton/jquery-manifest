@@ -362,7 +362,7 @@
           if (key.which === self.keys.ENTER) {
             key.preventDefault();
 
-            return
+            return;
           }
 
           // Keyboard navigation only works without an input value.
