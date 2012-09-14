@@ -74,11 +74,10 @@
       // 'false', arbitrary, non-results-list values can be added when the
       // 'separator' key character is pressed or the input is blurred.
       required: false,
-      // One or more key characters to separate arbitrary, non-results-list
-      // values if the 'required' option is 'false'. Pressing one of these keys
-      // will add the current input value to the list. Also used to split the
-      // initial input value for items (using the first character if multiple
-      // are configured).
+      // One or more key characters or codes to separate arbitrary, non-
+      // results-list values if the 'required' option is 'false'. Pressing one 
+      // of these keys will add the current input value to the list. Also used
+      // to split the initial input value and pasted values.
       separator: ',',
       // One or more initial values (string or JSON) to add to the list.
       values: null,
