@@ -72,7 +72,7 @@ Requirements
 
 *   jQuery 1.5 or newer.
 *   jQuery UI Widget 1.8.21. Included in the minified version.
-*   Marco Polo 1.6.0. Included in the minified version.
+*   Marco Polo 1.7.1. Included in the minified version.
 *   All modern browsers are supported, as well as IE 6 and newer.
 
 Getting Started
