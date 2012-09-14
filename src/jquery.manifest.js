@@ -445,8 +445,11 @@
         .bind('paste.manifest', function () {
           // 1ms timeout ensures the input value contains the pasted value.
           setTimeout(function () {
-            // Split the pasted value by separator and add each value.
-            if ($input.val()) {
+            self._resizeInput();
+
+            // Split the pasted value by separator and add each value if
+            // arbitrary values are allowed.
+            if (!options.required && $input.val()) {
               self.add(self._splitBySeparator($input.val()), null, true, true);
             }
           }, 1);
