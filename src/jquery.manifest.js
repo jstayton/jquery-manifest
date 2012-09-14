@@ -343,9 +343,26 @@
         .bind('keydown.manifest', function (key) {
           self._resizeInput();
 
+          // If arbitrary values are allowed, add the current input value if
+          // a separator key code (integer) is pressed.
+          if (!options.required && self._isSeparator(key.which)) {
+            // Prevent the separator key character from being added to the
+            // input value.
+            key.preventDefault();
+
+            // Add the current input value if there is any.
+            if ($input.val()) {
+              self.add($input.val(), null, true, true);
+            }
+
+            return;
+          }
+
           // Prevent the form from submitting on enter.
           if (key.which === self.keys.ENTER) {
             key.preventDefault();
+
+            return
           }
 
           // Keyboard navigation only works without an input value.
@@ -410,8 +427,8 @@
         })
         .bind('keypress.manifest', function (key) {
           // If arbitrary values are allowed, add the current input value if
-          // a separator key is pressed.
-          if (!options.required && self._isSeparator(key.which)) {
+          // a separator key character (string) is pressed.
+          if (!options.required && self._isSeparator(String.fromCharCode(key.which))) {
             // Prevent the separator key character from being added to the
             // input value.
             key.preventDefault();
@@ -424,6 +441,15 @@
         })
         .bind('keyup.manifest', function (key) {
           self._resizeInput();
+        })
+        .bind('paste.manifest', function () {
+          // 1ms timeout ensures the input value contains the pasted value.
+          setTimeout(function () {
+            // Split the pasted value by separator and add each value.
+            if ($input.val()) {
+              self.add(self._splitBySeparator($input.val()), null, true, true);
+            }
+          }, 1);
         })
         .bind('blur.manifest', function () {
           // 1ms timeout ensures that whatever 'mousedown' event caused this
@@ -641,8 +667,7 @@
       }
       // If not, split the current input value with the 'separator'.
       else if (value) {
-        values = value.split(self._separator());
-        values = $.map(values, $.trim);
+        values = self._splitBySeparator(value);
       }
 
       if (values.length) {
@@ -704,8 +729,7 @@
     // the input to its original state.
     destroy: function () {
       var self = this,
-          $input = self.$input,
-          valuesString = self.values().join(self._separator() + ' ');
+          $input = self.$input;
 
       // Destroy Marco Polo.
       if (self.options.marcoPolo) {
@@ -718,7 +742,7 @@
         .unwrap()
         .removeClass('mf_input')
         // Join the added item values together and set as the input value.
-        .val(valuesString);
+        .val(self._joinWithSeparator(self.values()));
 
       // Reset the input to its original attribute values.
       $.each(self.inputOriginals, function (attribute, value) {
@@ -823,32 +847,57 @@
       return self;
     },
 
-    // Whether the specified key code is a configured value separator.
+    // Whether a key code/character is a configured value separator.
     _isSeparator: function (key) {
       var separator = this.options.separator;
 
       if ($.isArray(separator)) {
-        // Convert the key code to the actual character, then compare. It's
-        // done this way because 'separator' is an array of characters.
-        return $.inArray(String.fromCharCode(key), separator) !== -1;
+        return $.inArray(key, separator) !== -1;
       }
       else {
-        // Convert the separator character to the key code, then compare.
-        return key === separator.charCodeAt();
+        return key === separator;
       }
     },
 
-    // Get the primary value separator. If an array of separators is
-    // configured, the first one is considered the primary.
-    _separator: function () {
-      var separator = this.options.separator;
+    // Get an array of all separators, optionally limited to only characters.
+    _separators: function (onlyChars) {
+      var option = this.options.separator,
+          separators = $.isArray(option) ? option : [option];
 
-      if ($.isArray(separator)) {
-        return separator[0];
+      if (onlyChars) {
+        // Filter the separators down to only strings/characters.
+        separators = $.grep(separators, function (separator) {
+          return typeof separator === 'string';
+        });
       }
-      else {
-        return separator;
+
+      return separators;
+    },
+
+    // Get the first separator, optionally limited to only characters.
+    _firstSeparator: function (onlyChars) {
+      return this._separators(onlyChars).shift();
+    },
+
+    // Split a string by all character separators.
+    _splitBySeparator: function (value) {
+      var separators = this._separators(true),
+          values = value;
+
+      if (separators.length) {
+        // Create a character class regex with all of separators escaped.
+        values = value.split(new RegExp('[\\' + separators.join('\\') + ']'));
+        values = $.map(values, $.trim);
       }
+
+      return values;
+    },
+
+    // Join a string with the first character separator.
+    _joinWithSeparator: function (values) {
+      var separator = this._firstSeparator(true) || '';
+
+      return values.join(separator + ' ');
     },
 
     // Get the first item.
