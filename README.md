@@ -72,7 +72,7 @@ Requirements
 
 *   jQuery 1.5 or newer.
 *   jQuery UI Widget 1.8.21. Included in the minified version.
-*   Marco Polo 1.7.1. Included in the minified version.
+*   Marco Polo 1.7.2. Included in the minified version.
 *   All modern browsers are supported, as well as IE 6 and newer.
 
 Getting Started
@@ -286,7 +286,7 @@ Options
 
 #### Events
 
-*   **onAdd** (data, $item) _function, null_
+*   **onAdd** (data, $item, initial) _function, null_
 
     Called when an item is added to the list. Return _false_ to prevent the
     item from being added, or a
@@ -301,17 +301,19 @@ Options
 
     *   **data** _string, object_ Item data.
     *   **$item** _jQuery object_ List item that will be added.
+    *   **initial** _boolean_ Whether this is an initial value.
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
     _Bind:_ You can also bind to the _manifestadd_ event:
 
-        $(selector).bind('manifestadd', function (event, data, $item) { … });
+        $(selector).bind('manifestadd', function (event, data, $item, initial) { … });
 
     ---------------------------------------------------------------------------
 *   **onChange** (type, data, $item) _function, null_
 
-    Called when an item is added or removed from the list.
+    Called when an item is added or removed from the list. Not fired for
+    initial values.
 
     _Default:_ null
 

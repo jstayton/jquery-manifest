@@ -131,7 +131,7 @@
           // Add the selected Marco Polo item to the Manifest list unless
           // 'onSelect' explicitly returns 'false'.
           if (add !== false) {
-            self.add(mpData, $mpItem, true, true);
+            self.add(mpData, $mpItem, true, false);
           }
         },
         required: options.required
@@ -235,7 +235,7 @@
 
       // Add any initial values to the list.
       if (options.values) {
-        self.add(options.values, null, false, false);
+        self.add(options.values, null, false, true);
       }
 
       self
@@ -284,7 +284,7 @@
         case 'values':
           // Although normally set on initialization, if this option is called
           // later, append the values to the list just like the 'add' method.
-          self.add(value, null, false, true);
+          self.add(value, null, false, false);
 
           break;
 
@@ -351,7 +351,7 @@
 
             // Add the current input value if there is any.
             if ($input.val()) {
-              self.add($input.val(), null, true, true);
+              self.add($input.val(), null, true, false);
             }
 
             return;
@@ -434,7 +434,7 @@
 
             // Add the current input value if there is any.
             if ($input.val()) {
-              self.add($input.val(), null, true, true);
+              self.add($input.val(), null, true, false);
             }
           }
         })
@@ -449,7 +449,7 @@
             // Split the pasted value by separator and add each value if
             // arbitrary values are allowed.
             if (!options.required && $input.val()) {
-              self.add(self._splitBySeparator($input.val()), null, true, true);
+              self.add(self._splitBySeparator($input.val()), null, true, false);
             }
           }, 1);
         })
@@ -472,7 +472,7 @@
               }
               // Add the input value since arbitrary values are allowed.
               else if ($input.val()) {
-                self.add($input.val(), null, true, true);
+                self.add($input.val(), null, true, false);
               }
             }
           }, 1);
@@ -553,7 +553,7 @@
             self._resizeInput();
           }
           else if ($input.val()) {
-            self.add($input.val(), null, true, true);
+            self.add($input.val(), null, true, false);
           }
         }
       });
@@ -572,7 +572,7 @@
     },
 
     // Add one or more items to the end of the list.
-    add: function (data, $mpItem, clearInputValue, triggerChange) {
+    add: function (data, $mpItem, clearInputValue, initial) {
       var self = this,
           $input = self.$input,
           options = self.options,
@@ -597,14 +597,14 @@
             // elements of the item.
             $item.append($remove, $value);
 
-            $.when(self._trigger('add', [value, $item]))
+            $.when(self._trigger('add', [value, $item, !!initial]))
              .then(function (add) {
                if (add !== false) {
                  $item.appendTo(self.$list);
 
                  // Sometimes an 'onChange' event shouldn't be fired, like when
                  // initial values are added.
-                 if (triggerChange || triggerChange === undefined) {
+                 if (!initial) {
                    self._trigger('change', ['add', value, $item]);
                  }
                }
@@ -673,7 +673,7 @@
       }
 
       if (values.length) {
-        self.add(values, null, true, false);
+        self.add(values, null, true, true);
       }
 
       return self;
