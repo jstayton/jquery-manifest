@@ -1,7 +1,7 @@
 {
   "name": "jquery-manifest",
   "version": "1.3.3",
-  "main": "./jquery.manifest.min.js",
+  "main": "./build/jquery.manifest.min.js",
   "dependencies": {
     "jquery": ">=1.5",
     "jquery-marcopolo": "~1.7.3"

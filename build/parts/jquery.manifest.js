@@ -1,12 +1,12 @@
 /*!
- * <%= pkg.title %> v<%= pkg.version %>
+ * Manifest v1.3.3
  *
- * <%= pkg.description %>
+ * A jQuery plugin that adds delight to selecting multiple values for an input.
  *
- * <%= pkg.homepage %>
+ * https://github.com/jstayton/jquery-manifest
  *
- * Copyright <%= grunt.template.today('yyyy') %> by <%= pkg.author.name %>
- * Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %>
+ * Copyright 2012 by Justin Stayton
+ * Licensed MIT
  */
 (function (factory) {
   // Register as an AMD module, compatible with script loaders like RequireJS.
