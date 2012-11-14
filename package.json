@@ -2,7 +2,7 @@
   "name": "jquery-manifest",
   "title": "Manifest",
   "description": "A jQuery plugin that adds delight to selecting multiple values for an input.",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "homepage": "https://github.com/jstayton/jquery-manifest",
   "author": {
     "name": "Justin Stayton",
