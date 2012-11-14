@@ -70,20 +70,52 @@ or you need to allow arbitrary values (like new tags), use Manifest.
 Requirements
 ------------
 
-*   jQuery 1.5 or newer.
-*   jQuery UI Widget 1.8.21. Included in the minified version.
-*   Marco Polo 1.7.3. Included in the minified version.
-*   All modern browsers are supported, as well as IE 6 and newer.
+*   jQuery >= 1.5
+*   jQuery UI Widget >= 1.8.21 (included in minified build)
+*   Marco Polo 1.7.4 (included in minified build)
+*   All modern browsers, including IE >= 6
 
-Getting Started
----------------
+Installation
+------------
 
-To start, make sure to include both jQuery and Manifest in your HTML:
+### Download
+
+#### Bower
+
+[Bower](http://twitter.github.com/bower) is a package manager for the web. Once
+installed, Bower can install Manifest with a single command:
+
+    bower install jquery-manifest
+
+#### Manually
+
+Copy the desired files from the `build` directory to your codebase.
+
+### Include
+
+Include both jQuery and Manifest in your HTML:
 
     <script src="jquery.min.js"></script>
     <script src="jquery.manifest.min.js"></script>
 
-Next, add a text input, if you haven't already:
+In most cases, `jquery.manifest.min.js` is the best file to include, as it
+contains the required libraries and source code in a single minified package.
+
+If [Marco Polo](https://github.com/jstayton/jquery-marcopolo) is already being
+used separately, `build/parts/jquery.manifest.min.js` can be included to prevent
+duplicate, unnecessary code.
+
+The `build` directory contains a number of other files as well:
+
+*   `jquery.manifest.js` contains the required libraries and source code in a
+    single unmifified package.
+*   `build/parts` contains each individual library and source file in both
+    minified and unminified varieties.
+
+Getting Started
+---------------
+
+To start, add a text input, if you haven't already:
 
     <input type="text" id="recipients" name="recipients">
 
@@ -149,7 +181,7 @@ Options
 
     _Default:_ false
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **required** _boolean_
 
     Whether to only allow items to be selected from the autocomplete results
@@ -159,7 +191,7 @@ Options
 
     _Default:_ false
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **separator** _string, array_
 
     One or more key characters or codes to separate arbitrary, non-results-list
@@ -169,14 +201,14 @@ Options
 
     _Default:_ ,
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **values** _string, object, array_
 
     One or more initial values to add to the list.
 
     _Default:_ null
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **valuesName** _string, null_
 
     Name of the hidden input value fields. Do not include _[]_ at the end, as
@@ -222,7 +254,7 @@ Options
               can also be returned if an asynchronous process needs to be run
               that resolves with one of these types later.
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **formatRemove** ($remove, $item) _function_
 
     Format the display of the remove link included with each item. The returned
@@ -250,7 +282,7 @@ Options
               can also be returned if an asynchronous process needs to be run
               that resolves with one of these types later.
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **formatValue** (data, $value, $item, $mpItem) _function_
 
     Format the hidden value to be submitted for the item. The returned value is
@@ -305,11 +337,11 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Bind:_ You can also bind to the _manifestadd_ event:
+    _Event:_ You can also bind to the _manifestadd_ event:
 
-        $(selector).bind('manifestadd', function (event, data, $item, initial) { … });
+        $(selector).on('manifestadd', function (event, data, $item, initial) { … });
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **onChange** (type, data, $item) _function, null_
 
     Called when an item is added or removed from the list. Not fired for
@@ -325,11 +357,11 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Bind:_ You can also bind to the _manifestchange_ event:
+    _Event:_ You can also bind to the _manifestchange_ event:
 
-        $(selector).bind('manifestchange', function (event, type, data, $item) { … });
+        $(selector).on('manifestchange', function (event, type, data, $item) { … });
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **onHighlight** (data, $item) _function, null_
 
     Called when an item is highlighted via _mouseover_.
@@ -343,11 +375,11 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Bind:_ You can also bind to the _manifesthighlight_ event:
+    _Event:_ You can also bind to the _manifesthighlight_ event:
 
-        $(selector).bind('manifesthighlight', function (event, data, $item) { … });
+        $(selector).on('manifesthighlight', function (event, data, $item) { … });
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **onHighlightRemove** (data, $item) _function, null_
 
     Called when an item is no longer highlighted via _mouseover_.
@@ -361,11 +393,11 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Bind:_ You can also bind to the _manifesthighlightremove_ event:
+    _Event:_ You can also bind to the _manifesthighlightremove_ event:
 
-        $(selector).bind('manifesthighlightremove', function (event, data, $item) { … });
+        $(selector).on('manifesthighlightremove', function (event, data, $item) { … });
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **onRemove** (data, $item) _function, null_
 
     Called when an item is removed from the list. Return _false_ to prevent the
@@ -380,11 +412,11 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Bind:_ You can also bind to the _manifestremove_ event:
+    _Event:_ You can also bind to the _manifestremove_ event:
 
-        $(selector).bind('manifestremove', function (event, data, $item) { … });
+        $(selector).on('manifestremove', function (event, data, $item) { … });
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **onSelect** (data, $item) _function, null_
 
     Called when an item is selected through keyboard navigation or click.
@@ -398,11 +430,11 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Bind:_ You can also bind to the _manifestselect_ event:
+    _Event:_ You can also bind to the _manifestselect_ event:
 
-        $(selector).bind('manifestselect', function (event, data, $item) { … });
+        $(selector).on('manifestselect', function (event, data, $item) { … });
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **onSelectRemove** (data, $item) _function, null_
 
     Called when an item is no longer selected.
@@ -416,9 +448,9 @@ Options
 
     _this:_ _jQuery object_ Text input (no need to wrap like _$(this)_).
 
-    _Bind:_ You can also bind to the _manifestselectremove_ event:
+    _Event:_ You can also bind to the _manifestselectremove_ event:
 
-        $(selector).bind('manifestselectremove', function (event, data, $item) { … });
+        $(selector).on('manifestselectremove', function (event, data, $item) { … });
 
 Methods
 -------
@@ -440,7 +472,7 @@ Methods
     *   **$mpItem** _jQuery object, null_ Optional Marco Polo selected list
                                           item.
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **container**
 
     Get the container element.
@@ -449,7 +481,7 @@ Methods
 
         $('#recipients').manifest('container');
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **destroy**
 
     Remove the elements, events, and functionality of this plugin and return
@@ -459,7 +491,7 @@ Methods
 
         $('#recipients').manifest('destroy');
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **list**
 
     Get the list element.
@@ -468,7 +500,7 @@ Methods
 
         $('#recipients').manifest('list');
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **option**
 
     Get or set one or more options.
@@ -499,7 +531,7 @@ Methods
     *   **nameOrValue** _string, object_ Optional options to get or set.
     *   **value** _mixed_ Optional option value to set.
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **remove**
 
     Remove one or more list items, specifying either jQuery objects or a
@@ -515,7 +547,7 @@ Methods
                                                or any selector accepted by
                                                .children().
 
-    ---------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
 *   **values**
 
     Get an array of the current values.
