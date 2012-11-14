@@ -1476,6 +1476,8 @@ $.Widget.prototype = {
  * Licensed MIT
  */
 (function (factory) {
+  'use strict';
+
   // Register as an AMD module, compatible with script loaders like RequireJS.
   // Source: https://github.com/umdjs/umd/blob/master/jqueryPlugin.js
   if (typeof define === 'function' && define.amd) {
@@ -1504,7 +1506,7 @@ $.Widget.prototype = {
         }
       },
       // Format the display of the remove link included with each item.
-      formatRemove: function ($remove, $item) {
+      formatRemove: function () {
         return 'X';
       },
       // Format the hidden value to be submitted for the item.
@@ -1541,7 +1543,7 @@ $.Widget.prototype = {
       // 'separator' key character is pressed or the input is blurred.
       required: false,
       // One or more key characters or codes to separate arbitrary, non-
-      // results-list values if the 'required' option is 'false'. Pressing one 
+      // results-list values if the 'required' option is 'false'. Pressing one
       // of these keys will add the current input value to the list. Also used
       // to split the initial input value and pasted values.
       separator: ',',
@@ -1904,7 +1906,7 @@ $.Widget.prototype = {
             }
           }
         })
-        .bind('keyup.manifest', function (key) {
+        .bind('keyup.manifest', function () {
           self._resizeInput();
         })
         .bind('paste.manifest', function () {
@@ -2149,7 +2151,6 @@ $.Widget.prototype = {
     // selector that matches list children.
     remove: function (selector) {
       var self = this,
-          $input = self.$input,
           $items = $();
 
       // If the selector is already a jQuery object (or objects), use that.
