@@ -164,13 +164,6 @@ of the more advanced guides:
 *   [Adding Initial Values](https://github.com/jstayton/jquery-manifest/wiki/Adding-Initial-Values)
 *   [Showing a Busy Indicator](https://github.com/jstayton/jquery-manifest/wiki/Showing-a-Busy-Indicator)
 
-Feedback
---------
-
-Please open an issue to request a feature or submit a bug report. Or even if
-you just want to provide some feedback, I'd love to hear. I'm also available on
-Twitter as [@jstayton](http://twitter.com/jstayton).
-
 Options
 -------
 
@@ -555,3 +548,19 @@ Methods
     _Example:_
 
         $('#recipients').manifest('values');
+
+Feedback
+--------
+
+Please open an issue to request a feature or submit a bug report. Or even if
+you just want to provide some feedback, I'd love to hear. I'm also available on
+Twitter as [@jstayton](http://twitter.com/jstayton).
+
+Contributing
+------------
+
+1.  Fork it.
+2.  Create your feature branch (`git checkout -b my-new-feature`).
+3.  Commit your changes (`git commit -am 'Added some feature'`).
+4.  Push to the branch (`git push origin my-new-feature`).
+5.  Create a new Pull Request.
