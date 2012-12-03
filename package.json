@@ -32,14 +32,14 @@
       "url": "https://github.com/jstayton/jquery-manifest/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "./build/jquery.manifest.min.js",
-  "dependencies": {
-    "jquery": ">=1.5",
-    "jquery-marcopolo": "~1.7.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "grunt": "~0.3.17",
     "grunt-bump": "~0.0.1",
+    "grunt-jasmine-task": "~0.2.3",
     "grunt-pkg-to-component": "~1.0.0"
+  },
+  "scripts": {
+    "test": "grunt test"
   }
 }
