@@ -3,7 +3,7 @@
   "version": "1.3.4",
   "dependencies": {
     "jquery": ">=1.5",
-    "jquery-marcopolo": "~1.7.3"
+    "jquery-marcopolo": "~1.7.4"
   },
   "main": "./build/jquery.manifest.min.js"
 }
