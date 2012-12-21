@@ -2,7 +2,8 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var bannerRegex = /\/\*[\s\S]*?\*\//;
+  var bannerRegex = /\/\*[\s\S]*?\*\//,
+      sauceLabsKey = process.env.SAUCE_LABS_KEY;
 
   grunt.initConfig({
     pkg: '<json:package.json>',
@@ -66,7 +67,7 @@ module.exports = function (grunt) {
       }
     },
     jasmine: {
-      all: 'test/runner.html'
+      all: 'http://localhost:8000/test/runner.html'
     },
     jshint: {
       options: {
@@ -98,13 +99,98 @@ module.exports = function (grunt) {
         jquery: true
       },
       globals: {
-        define: true
+        define: true,
+        process: true
       }
+    },
+    'saucelabs-jasmine': {
+      all: {
+        username: 'justinstayton',
+        key: sauceLabsKey,
+        testname: 'jquery-manifest',
+        tags: ['master'],
+        urls: ['<config:jasmine.all>'],
+        browsers: (function () {
+          var compact = {
+                'chrome': {
+                  '*': ['Windows 2008', 'Mac 10.8', 'Linux']
+                },
+                'firefox': {
+                  '3.6': 'Windows 2012',
+                  '*': ['Windows 2012', 'Mac 10.6', 'Linux']
+                },
+                'internet explorer': {
+                  '6': 'Windows 2003',
+                  '7': 'Windows 2003',
+                  '8': 'Windows 2003',
+                  '9': 'Windows 2008',
+                  '10': 'Windows 2012'
+                },
+                'ipad': {
+                  '5.1': 'Mac 10.8',
+                  '6': 'Mac 10.8'
+                },
+                'iphone': {
+                  '5.1': 'Mac 10.8',
+                  '6': 'Mac 10.8'
+                },
+                'opera': {
+                  '11': 'Windows 2008',
+                  '12': ['Windows 2008', 'Linux']
+                },
+                'safari': {
+                  '5': ['Windows 2008', 'Mac 10.6'],
+                  '6': 'Mac 10.8'
+                }
+              },
+              expanded = [];
+
+          Object.keys(compact).forEach(function (browserName) {
+            Object.keys(compact[browserName]).forEach(function (version) {
+              var platforms = compact[browserName][version];
+
+              if (!Array.isArray(platforms)) {
+                platforms = [platforms];
+              }
+
+              platforms.forEach(function (platform) {
+                var options = {
+                      browserName: browserName
+                    };
+
+                if (version !== '*') {
+                  options.version = version;
+                }
+
+                if (platform) {
+                  options.platform = platform;
+                }
+
+                expanded.push(options);
+              });
+            });
+          });
+
+          return expanded;
+        })()
+      }
+    },
+    server: {
+      port: 8000,
+      base: '.'
     },
     uglify: {}
   });
 
-  grunt.registerTask('test', 'lint jasmine');
+  var testTasks = ['lint', 'server', 'jasmine'];
+
+  if (sauceLabsKey) {
+    grunt.loadNpmTasks('grunt-saucelabs');
+
+    testTasks.push('saucelabs-jasmine');
+  }
+
+  grunt.registerTask('test', testTasks.join(' '));
   grunt.registerTask('default', 'test min concat component');
 
   grunt.loadNpmTasks('grunt-bump');
