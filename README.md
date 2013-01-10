@@ -16,6 +16,8 @@ Developed by [Justin Stayton](http://twitter.com/jstayton) while at
 *   [Examples](http://jstayton.github.com/jquery-manifest)
 *   [Release Notes](https://github.com/jstayton/jquery-manifest/wiki/Release-Notes)
 
+[![Selenium Test Status](https://saucelabs.com/buildstatus/manifest)](https://saucelabs.com/u/manifest)
+
 [![Build Status](https://secure.travis-ci.org/jstayton/jquery-manifest.png)](https://travis-ci.org/jstayton/jquery-manifest)
 
 Features

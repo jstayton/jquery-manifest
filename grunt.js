@@ -2,8 +2,7 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var bannerRegex = /\/\*[\s\S]*?\*\//,
-      sauceLabsKey = process.env.SAUCE_LABS_KEY;
+  var bannerRegex = /\/\*[\s\S]*?\*\//;
 
   grunt.initConfig({
     pkg: '<json:package.json>',
@@ -105,8 +104,6 @@ module.exports = function (grunt) {
     },
     'saucelabs-jasmine': {
       all: {
-        username: 'justinstayton',
-        key: sauceLabsKey,
         testname: 'jquery-manifest',
         tags: ['master'],
         urls: ['<config:jasmine.all>'],
@@ -172,7 +169,8 @@ module.exports = function (grunt) {
           });
 
           return expanded;
-        })()
+        })(),
+        onTestComplete: function () { }
       }
     },
     server: {
@@ -184,7 +182,7 @@ module.exports = function (grunt) {
 
   var testTasks = ['lint', 'server', 'jasmine'];
 
-  if (sauceLabsKey) {
+  if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
     grunt.loadNpmTasks('grunt-saucelabs');
 
     testTasks.push('saucelabs-jasmine');
