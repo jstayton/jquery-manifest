@@ -62,7 +62,7 @@ module.exports = function (grunt) {
       main: './build/jquery.manifest.min.js',
       dependencies: {
         'jquery': '>=1.5',
-        'jquery-marcopolo': '~1.7.4'
+        'jquery-marcopolo': '~1.7.5'
       }
     },
     jasmine: {

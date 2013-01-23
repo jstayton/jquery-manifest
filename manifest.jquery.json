@@ -32,6 +32,6 @@
   ],
   "dependencies": {
     "jquery": ">=1.5",
-    "jquery-marcopolo": "~1.7.4"
+    "jquery-marcopolo": "~1.7.5"
   }
 }

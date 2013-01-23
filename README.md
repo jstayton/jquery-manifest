@@ -75,7 +75,7 @@ Requirements
 
 *   jQuery >= 1.5
 *   jQuery UI Widget >= 1.8.21 (included in minified build)
-*   Marco Polo 1.7.4 (included in minified build)
+*   Marco Polo 1.7.5 (included in minified build)
 *   All modern browsers, including IE >= 6
 
 Installation
