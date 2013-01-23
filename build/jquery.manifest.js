@@ -272,13 +272,13 @@ $.Widget.prototype = {
 })( jQuery );
 
 /*!
- * Marco Polo v1.7.4
+ * Marco Polo v1.7.5
  *
  * A jQuery autocomplete plugin for the discerning developer.
  *
  * https://github.com/jstayton/jquery-marcopolo
  *
- * Copyright 2012 by Justin Stayton
+ * Copyright 2013 by Justin Stayton
  * Licensed MIT
  */
 (function (factory) {
@@ -1466,13 +1466,13 @@ $.Widget.prototype = {
 }));
 
 /*!
- * Manifest v1.3.4
+ * Manifest v1.3.5
  *
  * A jQuery plugin that adds delight to selecting multiple values for an input.
  *
  * https://github.com/jstayton/jquery-manifest
  *
- * Copyright 2012 by Justin Stayton
+ * Copyright 2013 by Justin Stayton
  * Licensed MIT
  */
 (function (factory) {

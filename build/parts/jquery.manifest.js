@@ -1,11 +1,11 @@
 /*!
- * Manifest v1.3.4
+ * Manifest v1.3.5
  *
  * A jQuery plugin that adds delight to selecting multiple values for an input.
  *
  * https://github.com/jstayton/jquery-manifest
  *
- * Copyright 2012 by Justin Stayton
+ * Copyright 2013 by Justin Stayton
  * Licensed MIT
  */
 (function (factory) {
