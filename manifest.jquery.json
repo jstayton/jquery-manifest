@@ -21,8 +21,6 @@
     "name": "Justin Stayton",
     "url": "http://justinstayton.com"
   },
-  "docs": "https://github.com/jstayton/jquery-manifest/blob/master/README.md",
-  "demo": "http://jstayton.github.com/jquery-manifest",
   "bugs": "https://github.com/jstayton/jquery-manifest/issues",
   "licenses": [
     {
@@ -33,5 +31,7 @@
   "dependencies": {
     "jquery": ">=1.5",
     "jquery-marcopolo": "~1.7.5"
-  }
+  },
+  "docs": "https://github.com/jstayton/jquery-manifest/blob/master/README.md",
+  "demo": "http://jstayton.github.com/jquery-manifest"
 }

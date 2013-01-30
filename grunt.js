@@ -61,7 +61,7 @@ module.exports = function (grunt) {
     component: {
       main: './build/jquery.manifest.min.js',
       dependencies: {
-        'jquery': '>=1.5',
+        jquery: '>=1.5',
         'jquery-marcopolo': '~1.7.5'
       }
     },
@@ -101,6 +101,14 @@ module.exports = function (grunt) {
         define: true,
         process: true
       }
+    },
+    jqueryjson: {
+      dependencies: {
+        jquery: '>=1.5',
+        'jquery-marcopolo': '~1.7.5'
+      },
+      docs: 'https://github.com/jstayton/jquery-manifest/blob/master/README.md',
+      demo: 'http://jstayton.github.com/jquery-manifest'
     },
     'saucelabs-jasmine': {
       all: {
@@ -189,9 +197,10 @@ module.exports = function (grunt) {
   }
 
   grunt.registerTask('test', testTasks.join(' '));
-  grunt.registerTask('default', 'test min concat component');
+  grunt.registerTask('default', 'test min concat component jquery-json');
 
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-jasmine-task');
+  grunt.loadNpmTasks('grunt-jquery-json');
   grunt.loadNpmTasks('grunt-pkg-to-component');
 };
