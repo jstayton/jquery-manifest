@@ -92,7 +92,8 @@ installed, Bower can install Manifest with a single command:
 
 #### Manually
 
-Copy the desired files from the `build` directory to your codebase.
+*   [Minified without comments](https://raw.github.com/jstayton/jquery-manifest/master/build/jquery.manifest.min.js)
+*   [Full source with comments](https://raw.github.com/jstayton/jquery-manifest/master/build/jquery.manifest.js)
 
 ### Include
 
