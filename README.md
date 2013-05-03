@@ -16,7 +16,7 @@ the user experience should be better. And it can be, with Manifest.
 Developed by [Justin Stayton](http://twitter.com/jstayton) while at
 [Monk Development](http://monkdev.com).
 
-*   [Examples](http://jstayton.github.com/jquery-manifest)
+*   [Examples](http://jstayton.github.io/jquery-manifest)
 *   [Release Notes](https://github.com/jstayton/jquery-manifest/wiki/Release-Notes)
 
 Features
@@ -85,8 +85,8 @@ Installation
 
 #### Bower
 
-[Bower](http://twitter.github.com/bower) is a package manager for the web. Once
-installed, Bower can install Manifest with a single command:
+[Bower](http://bower.io) is a package manager for the web. Once installed, Bower
+can install Manifest with a single command:
 
     bower install jquery-manifest
 
