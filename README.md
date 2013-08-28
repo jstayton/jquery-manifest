@@ -99,8 +99,10 @@ can install Manifest with a single command:
 
 Include both jQuery and Manifest in your HTML:
 
-    <script src="jquery.min.js"></script>
-    <script src="jquery.manifest.min.js"></script>
+```html
+<script src="jquery.min.js"></script>
+<script src="jquery.manifest.min.js"></script>
+```
 
 In most cases, `jquery.manifest.min.js` is the best file to include, as it
 contains the required libraries and source code in a single minified package.
@@ -121,18 +123,22 @@ Getting Started
 
 To start, add a text input, if you haven't already:
 
-    <input type="text" id="recipients" name="recipients">
+```html
+<input type="text" id="recipients" name="recipients">
+```
 
 Then attach Manifest to the text input in your JavaScript:
 
-    $('#recipients').manifest({
-      marcoPolo: {
-        url: '/contacts/search',
-        formatItem: function (data) {
-          return '"' + data.name + '" (' + data.email + ')';
-        }
-      }
-    });
+```javascript
+$('#recipients').manifest({
+  marcoPolo: {
+    url: '/contacts/search',
+    formatItem: function (data) {
+      return '"' + data.name + '" (' + data.email + ')';
+    }
+  }
+});
+```
 
 Notice the `marcoPolo` option object.
 [Marco Polo](https://github.com/jstayton/jquery-marcopolo) powers the
@@ -150,12 +156,14 @@ after the text input. In the case of this example, the input's name is
 the values of this array in PHP (`$_POST['recipients_values']`), the results
 will look something like this:
 
-    Array
-    (
-        [0] => "Lindsay Weir" (lweir65@gmail.com)
-        [1] => "Bill Haverchuck" (chuckle@yahoo.com)
-        [2] => "Daniel Desario" (ddesario@me.com)
-    )
+```php
+Array
+(
+    [0] => "Lindsay Weir" (lweir65@gmail.com)
+    [1] => "Bill Haverchuck" (chuckle@yahoo.com)
+    [2] => "Daniel Desario" (ddesario@me.com)
+)
+```
 
 Loop through the array and process each value as necessary.
 
@@ -223,19 +231,23 @@ Options
     Format the display of an item. The returned value is added to _$item_ with
     the class _mf\_item_:
 
-        <li class="mf_item">
-          "Lindsay Weir" (lweir65@gmail.com)
-          …
-        </li>
+    ```html
+    <li class="mf_item">
+      "Lindsay Weir" (lweir65@gmail.com)
+      …
+    </li>
+    ```
 
     _Default:_
 
-        if ($mpItem) {
-          return $mpItem.html();
-        }
-        else {
-          return data;
-        }
+    ```javascript
+    if ($mpItem) {
+      return $mpItem.html();
+    }
+    else {
+      return data;
+    }
+    ```
 
     _Parameters:_
 
@@ -257,15 +269,19 @@ Options
     Format the display of the remove link included with each item. The returned
     value is added to _$remove_ with the class _mf\_remove_:
 
-        <li class="mf_item">
-          …
-          <a href="#" class="mf_remove" title="Remove">X</a>
-          …
-        </li>
+    ```html
+    <li class="mf_item">
+      …
+      <a href="#" class="mf_remove" title="Remove">X</a>
+      …
+    </li>
+    ```
 
     _Default:_
 
-        return 'X';
+    ```javascript
+    return 'X';
+    ```
 
     _Parameters:_
 
@@ -285,19 +301,23 @@ Options
     Format the hidden value to be submitted for the item. The returned value is
     set as the value of _$value_ with the class _mf\_value_:
 
-        <li class="mf_item">
-          …
-          <input type="hidden" class="mf_value" value="lweir65@gmail.com">
-        </li>
+    ```html
+    <li class="mf_item">
+      …
+      <input type="hidden" class="mf_value" value="lweir65@gmail.com">
+    </li>
+    ```
 
     _Default:_
 
-        if ($mpItem) {
-          return $mpItem.text();
-        }
-        else {
-          return data;
-        }
+    ```javascript
+    if ($mpItem) {
+      return $mpItem.text();
+    }
+    else {
+      return data;
+    }
+    ```
 
     _Parameters:_
 
@@ -336,7 +356,9 @@ Options
 
     _Event:_ You can also bind to the _manifestadd_ event:
 
-        $(selector).on('manifestadd', function (event, data, $item, initial) { … });
+    ```javascript
+    $(selector).on('manifestadd', function (event, data, $item, initial) { … });
+    ```
 
     ----------------------------------------------------------------------------
 *   **onChange** (type, data, $item) _function, null_
@@ -356,7 +378,9 @@ Options
 
     _Event:_ You can also bind to the _manifestchange_ event:
 
-        $(selector).on('manifestchange', function (event, type, data, $item) { … });
+    ```javascript
+    $(selector).on('manifestchange', function (event, type, data, $item) { … });
+    ```
 
     ----------------------------------------------------------------------------
 *   **onHighlight** (data, $item) _function, null_
@@ -374,7 +398,9 @@ Options
 
     _Event:_ You can also bind to the _manifesthighlight_ event:
 
-        $(selector).on('manifesthighlight', function (event, data, $item) { … });
+    ```javascript
+    $(selector).on('manifesthighlight', function (event, data, $item) { … });
+    ```
 
     ----------------------------------------------------------------------------
 *   **onHighlightRemove** (data, $item) _function, null_
@@ -392,7 +418,9 @@ Options
 
     _Event:_ You can also bind to the _manifesthighlightremove_ event:
 
-        $(selector).on('manifesthighlightremove', function (event, data, $item) { … });
+    ```javascript
+    $(selector).on('manifesthighlightremove', function (event, data, $item) { … });
+    ```
 
     ----------------------------------------------------------------------------
 *   **onRemove** (data, $item) _function, null_
@@ -411,7 +439,9 @@ Options
 
     _Event:_ You can also bind to the _manifestremove_ event:
 
-        $(selector).on('manifestremove', function (event, data, $item) { … });
+    ```javascript
+    $(selector).on('manifestremove', function (event, data, $item) { … });
+    ```
 
     ----------------------------------------------------------------------------
 *   **onSelect** (data, $item) _function, null_
@@ -429,7 +459,9 @@ Options
 
     _Event:_ You can also bind to the _manifestselect_ event:
 
-        $(selector).on('manifestselect', function (event, data, $item) { … });
+    ```javascript
+    $(selector).on('manifestselect', function (event, data, $item) { … });
+    ```
 
     ----------------------------------------------------------------------------
 *   **onSelectRemove** (data, $item) _function, null_
@@ -447,7 +479,9 @@ Options
 
     _Event:_ You can also bind to the _manifestselectremove_ event:
 
-        $(selector).on('manifestselectremove', function (event, data, $item) { … });
+    ```javascript
+    $(selector).on('manifestselectremove', function (event, data, $item) { … });
+    ```
 
 Methods
 -------
@@ -458,10 +492,12 @@ Methods
 
     _Example:_
 
-        $('#recipients').manifest('add', {
-          name: 'Lindsay Weir',
-          email: 'lweir65@gmail.com'
-        });
+    ```javascript
+    $('#recipients').manifest('add', {
+      name: 'Lindsay Weir',
+      email: 'lweir65@gmail.com'
+    });
+    ```
 
     _Parameters:_
 
@@ -476,7 +512,9 @@ Methods
 
     _Example:_
 
-        $('#recipients').manifest('container');
+    ```javascript
+    $('#recipients').manifest('container');
+    ```
 
     ----------------------------------------------------------------------------
 *   **destroy**
@@ -486,7 +524,9 @@ Methods
 
     _Example:_
 
-        $('#recipients').manifest('destroy');
+    ```javascript
+    $('#recipients').manifest('destroy');
+    ```
 
     ----------------------------------------------------------------------------
 *   **list**
@@ -495,7 +535,9 @@ Methods
 
     _Example:_
 
-        $('#recipients').manifest('list');
+    ```javascript
+    $('#recipients').manifest('list');
+    ```
 
     ----------------------------------------------------------------------------
 *   **option**
@@ -506,22 +548,30 @@ Methods
 
     Get a specific option:
 
-        $('#recipients').manifest('option', 'separator');
+    ```javascript
+    $('#recipients').manifest('option', 'separator');
+    ```
 
     Get the entire options object:
 
-        $('#recipients').manifest('option');
+    ```javascript
+    $('#recipients').manifest('option');
+    ```
 
     Set a specific option:
 
-        $('#recipients').manifest('option', 'separator', '/');
+    ```javascript
+    $('#recipients').manifest('option', 'separator', '/');
+    ```
 
     Set multiple options:
 
-        $('#recipients').manifest('option', {
-          separator: '/',
-          onSelect: function (data, $item) { … }
-        });
+    ```javascript
+    $('#recipients').manifest('option', {
+      separator: '/',
+      onSelect: function (data, $item) { … }
+    });
+    ```
 
     _Parameters:_
 
@@ -536,7 +586,9 @@ Methods
 
     _Example:_
 
-        $('#recipients').manifest('remove', ':last');
+    ```javascript
+    $('#recipients').manifest('remove', ':last');
+    ```
 
     _Parameters:_
 
@@ -551,7 +603,9 @@ Methods
 
     _Example:_
 
-        $('#recipients').manifest('values');
+    ```javascript
+    $('#recipients').manifest('values');
+    ```
 
 Feedback
 --------
