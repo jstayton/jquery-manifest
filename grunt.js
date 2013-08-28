@@ -62,7 +62,7 @@ module.exports = function (grunt) {
       main: './build/jquery.manifest.min.js',
       dependencies: {
         jquery: '>=1.5',
-        'jquery-marcopolo': '~1.7.5'
+        'jquery-marcopolo': '~1.8.0'
       }
     },
     jasmine: {
@@ -105,7 +105,7 @@ module.exports = function (grunt) {
     jqueryjson: {
       dependencies: {
         jquery: '>=1.5',
-        'jquery-marcopolo': '~1.7.5'
+        'jquery-marcopolo': '~1.8.0'
       },
       docs: 'https://github.com/jstayton/jquery-manifest/blob/master/README.md',
       demo: 'http://jstayton.github.com/jquery-manifest'

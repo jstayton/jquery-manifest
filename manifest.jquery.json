@@ -1,6 +1,6 @@
 {
   "name": "manifest",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "title": "Manifest",
   "description": "A jQuery plugin that adds delight to selecting multiple values for an input.",
   "keywords": [
@@ -30,7 +30,7 @@
   ],
   "dependencies": {
     "jquery": ">=1.5",
-    "jquery-marcopolo": "~1.7.5"
+    "jquery-marcopolo": "~1.8.0"
   },
   "docs": "https://github.com/jstayton/jquery-manifest/blob/master/README.md",
   "demo": "http://jstayton.github.com/jquery-manifest"

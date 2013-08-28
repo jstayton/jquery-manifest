@@ -1,5 +1,5 @@
 /*!
- * Manifest v1.3.5
+ * Manifest v1.3.6
  *
  * A jQuery plugin that adds delight to selecting multiple values for an input.
  *
