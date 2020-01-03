@@ -1,3 +1,7 @@
+**NOTICE:** _This project is deprecated and no longer maintained. If you'd like
+to continue supporting a forked version, please reach out on Twitter
+([@kidjustino](https://twitter.com/kidjustino)) to have it listed here._
+
 Manifest
 ========
 
@@ -13,7 +17,7 @@ to precisely select just the right amount of text, making sure not to
 accidentally remove too much or too little. As a discerning developer, you know
 the user experience should be better. And it can be, with Manifest.
 
-Developed by [Justin Stayton](http://twitter.com/jstayton) while at
+Developed by [Justin Stayton](http://justinstayton.com) while at
 [Monk Development](http://monkdev.com).
 
 *   [Examples](http://jstayton.github.io/jquery-manifest)
@@ -612,7 +616,7 @@ Feedback
 
 Please open an issue to request a feature or submit a bug report. Or even if
 you just want to provide some feedback, I'd love to hear. I'm also available on
-Twitter as [@jstayton](http://twitter.com/jstayton).
+Twitter as [@kidjustino](https://twitter.com/kidjustino).
 
 Contributing
 ------------
